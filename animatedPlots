@@ -79,3 +79,22 @@ for t in range(1,361):
     plt.pause(0.05)
 
 ax.cla()
+
+
+
+fig, ax = plt.subplots()
+
+for t in range(0,360):
+    ax.cla()
+    ax.plot(wp3[t,:],alt,label=”wrf-clubb c15=0”)
+    ax.plot(wp3_05[t,:],alt,label=’wrf-clubb c15=0.5’)
+    ax.plot(wp3_1[t,:],alt,label=’wrf-clubb c15=1.0’)
+    ax.plot(wp3_15[t,:],alt,label=’wrf-clubb c15=1.5’)
+    ax.plot(wp3_clb[t,:],alt,’k--’,label=’clubb c15=0’)
+    ax.set_xlim(-0.1,1.5)
+    ax.legend()
+    ax.set_title("t = {}".format(t))
+    plt.pause(0.1)
+
+ax.cla()
+
