@@ -1,0 +1,13 @@
+
+fig=plt.figure()
+ax=fig.add_subplot(2,1,1)
+im=ax.imshow(data_clb.T,origin='lower')
+fig.colorbar(im,ax=ax)
+ax.set_title('clubb bv freq. disagreements')
+ax=fig.add_subplot(2,1,2)
+im=ax.imshow(data_wrf.T,origin='lower')
+fig.colorbar(im,ax=ax)
+ax.set_title('wrf bv freq. disagreements')
+plt.show()
+
+
