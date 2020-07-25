@@ -30,12 +30,6 @@ fig.colorbar(im,ax=ax)
 ax.set_title('wrf bv freq. disagreements')
 plt.show()
 
-
-from netCDF4 import Dataset
-import numpy as np
-import matplotlib.pyplot as plt
-
-
 plt.plot(clblwpm,label='clb min')
 plt.plot(clblwpnm,label='clb no min')
 plt.plot(wrflwpm,label='wrf min')
@@ -85,94 +79,6 @@ wp3_pre89_1=np.mean(np.array(ztw_pre89_c15eq1.variables['wp3']),(2,3))
 wp3_pre89_5=np.mean(np.array(ztw_pre89_c15eq5.variables['wp3']),(2,3))
 
 lwpc=np.mean(np.array(clbsfc.variables['lwp']),(1,2,3))
-
-
-
-
-
-fig, ax = plt.subplots()
-
-for t in range(0,360):
-    ax.cla()
-    ax.plot(wp3[t,:],alt,label='wrf-clubb c15=0')
-    ax.plot(wp3_05[t,:],alt,label='wrf-clubb c15=0.5')
-    ax.plot(wp3_1[t,:],alt,label='wrf-clubb c15=1.0')
-    ax.plot(wp3_15[t,:],alt,label='wrf-clubb c15=1.5')
-    ax.plot(wp3_3[t,:],alt,label='wrf-clubb c15=3')
-    ax.plot(wp3_5[t,:],alt,label='wrf-clubb c15=5')
-    ax.plot(wp3_1_op[t,:],alt,label='wrf-clubb oldp c15=1')
-    ax.plot(wp3_5_op[t,:],alt,label='wrf-clubb oldp c15=5')
-    ax.plot(wp3_pre89[t,:],alt,':',label='wrf-clubb pre89 c15=0.4')
-    ax.plot(wp3_pre89_1[t,:],alt,':',label='wrf-clubb pre89 c15=1')
-    ax.plot(wp3_pre89_5[t,:],alt,':',label='wrf-clubb pre89 c15=5')
-    ax.plot(wp3_clb[t,:],alt,'k--',label='clubb-scm c15=0')
-    ax.set_xlabel('wp3 [m3/s3]')
-    ax.set_ylabel('height [m]')
-    ax.set_xlim(-0.1,0.8)
-    ax.legend()
-    ax.set_title("t = {}".format(t))
-    plt.pause(0.05)
-
-ax.cla()
-
-
-
-fig, ax = plt.subplots()
-
-for t in range(0,360):
-    ax.cla()
-    ax.plot(clb_wp3_m[t,:],label='clb m')
-    ax.plot(clb_wp3_nm[t,:],label='clb nm')
-    ax.plot(wrf_wp3_m[t,:],label='wrf m')
-    ax.plot(wrf_wp3_nm[t,:],label='wrf nm')
-    ax.plot(wp3_samm[t,:],label='sam m')
-    ax.plot(wp3_samnm[t,:],label='sam nm')
-    ax.set_xlabel('wp3 [m3/s3]')
-    ax.set_ylabel('height [m]')
-    ax.set_ylim(-0.1,0.8)
-    ax.legend()
-    ax.set_title("t = {}".format(t))
-    plt.pause(0.05)
-
-ax.cla()
-
-
-
-
-
-fig, ax = plt.subplots()
-
-
-fig = plt.figure()
-for t in range(1,361):
-    ax1=fig.add_subplot(2,1,1)
-    ax1.cla()
-    ax1.plot(wp3_clb[t,:],alt,label='clubb-scm c15=0')
-    ax1.set_xlabel('wp3 [m3/s3]')
-    ax1.set_ylabel('height [m]')
-    ax1.set_xlim(-0.1,0.8)
-    ax1.legend()
-    ax1.set_title("t = {}".format(t))
-    ax2=fig.add_subplot(2,1,2)
-    ax2.cla()
-    ax2.plot(lwpc[0:t])
-    ax2.set_xlabel('time [min]')
-    ax2.set_ylabel('LWP [kg/m2]')
-    ax2.set_xlim(0,360)
-    ax2.set_ylim(0,max(lwp))
-    #ax.legend()
-    #ax.set_title("t = {}".format(t))
-    plt.pause(0.05)
-
-ax.cla()
-
-
-
-
-
-from netCDF4 import Dataset
-import numpy as np
-import matplotlib.pyplot as plt
 
 wzt=Dataset('/home/stepheba/new/old_wrf/WRF/test/em_quarter_ss/WRF_CURR_DFLT/bomex_zt_wrf.nc')
 wzm=Dataset('/home/stepheba/new/old_wrf/WRF/test/em_quarter_ss/WRF_CURR_DFLT/bomex_zm_wrf.nc')
