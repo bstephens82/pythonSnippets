@@ -1,0 +1,16 @@
+
+from netCDF4 import Dataset
+import numpy as np
+import matplotlib.pyplot as plt
+import scipy.stats
+
+t=35
+h=25
+var=np.var(w[t,h,:,:])
+sk=scipy.stats.skew(np.reshape(w[t,h,:,:],(144*144)))
+m3=sk*var**1.5
+plt.imshow(w[t,h,:,:])
+plt.colorbar()
+plt.title('var = {:4.3f}, sk = {:4.3f}, m3 = {:4.3f}'.format(var,sk,m3))
+plt.show()
+
