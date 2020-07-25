@@ -1,0 +1,14 @@
+
+data_clb=np.zeros((360,76))
+for i in range(1,361):
+    file="/home/stepheba/new/clubb/run_scripts/disfiles/dis{}.txt".format(i)
+    temp=np.loadtxt(file)
+    for j in range(0,76):
+        data_clb[i-1,j]=temp[j]
+
+data_wrf=np.zeros((360,75))
+for i in range(1,361):
+    file="/home/stepheba/new/wrf/WRF/test/em_quarter_ss/disfiles/dis{}.txt".format(i)
+    temp=np.loadtxt(file)
+    for j in range(0,75):
+        data_wrf[i-1,j]=temp[j]
