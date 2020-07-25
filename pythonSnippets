@@ -1,0 +1,1838 @@
+
+
+from netCDF4 import Dataset
+import numpy as np
+import matplotlib.pyplot as plt
+
+
+data_clb=np.zeros((360,76))
+for i in range(1,361):
+    file="/home/stepheba/new/clubb/run_scripts/disfiles/dis{}.txt".format(i)
+    temp=np.loadtxt(file)
+    for j in range(0,76):
+        data_clb[i-1,j]=temp[j]
+
+data_wrf=np.zeros((360,75))
+for i in range(1,361):
+    file="/home/stepheba/new/wrf/WRF/test/em_quarter_ss/disfiles/dis{}.txt".format(i)
+    temp=np.loadtxt(file)
+    for j in range(0,75):
+        data_wrf[i-1,j]=temp[j]
+
+fig=plt.figure()
+ax=fig.add_subplot(2,1,1)
+im=ax.imshow(data_clb.T,origin='lower')
+fig.colorbar(im,ax=ax)
+ax.set_title('clubb bv freq. disagreements')
+ax=fig.add_subplot(2,1,2)
+im=ax.imshow(data_wrf.T,origin='lower')
+fig.colorbar(im,ax=ax)
+ax.set_title('wrf bv freq. disagreements')
+plt.show()
+
+
+from netCDF4 import Dataset
+import numpy as np
+import matplotlib.pyplot as plt
+
+
+plt.plot(clblwpm,label='clb min')
+plt.plot(clblwpnm,label='clb no min')
+plt.plot(wrflwpm,label='wrf min')
+plt.plot(wrflwpnm,label='wrf no min')
+plt.plot(samlwpm/1000,label='sam min')
+plt.plot(samlwpnm/1000,label='sam no min')
+plt.legend()
+plt.show()
+
+ztw=Dataset('/home/stepheba/new/old_wrf/WRF/test/em_quarter_ss/WRF_CURR_DFLT/bomex_zt_wrf.nc')
+sfcw=Dataset('/home/stepheba/new/old_wrf/WRF/test/em_quarter_ss/WRF_CURR_DFLT/bomex_sfc_wrf.nc')
+
+lwp=np.mean(np.array(sfcw.variables['lwp']),(1,2,3))
+alt=np.array(ztw.variables['altitude'])
+
+ztw05=Dataset('wrf_c15eq05/bomex_zt_wrf.nc')
+ztw1=Dataset('wrf_c15eq1/bomex_zt_wrf.nc')
+ztw15=Dataset('wrf_c15eq15/bomex_zt_wrf.nc')
+ztw3=Dataset('wrf_c15eq3/bomex_zt_wrf.nc')
+ztw5=Dataset('wrf_c15eq5/bomex_zt_wrf.nc')
+ztw5_op=Dataset('wrf_c15eq5_oldp/bomex_zt_wrf.nc')
+ztw1_op=Dataset('wrf_c15eq1_oldp/bomex_zt_wrf.nc')
+clb=Dataset('/home/stepheba/new/old_clubb/newdefault/bomex_zt_wrf.nc')
+clbsfc=Dataset('/home/stepheba/new/old_clubb/newdefault/bomex_sfc_wrf.nc')
+
+wrf=Dataset('/home/stepheba/new/old_wrf/WRF/test/em_quarter_ss/tests/wrf_old/bomex_zt_wrf.nc')
+clb=Dataset('/home/stepheba/new/old_clubb/BAS/clb_old/bomex_zt_wrf.nc')
+
+wp3w=np.mean(np.array(wrf.variables['wp3']),(2,3))
+wp3c=np.mean(np.array(clb.variables['wp3']),(2,3))
+
+wp3=np.mean(np.array(ztw.variables['wp3']),(2,3))
+wp3_05=np.mean(np.array(ztw05.variables['wp3']),(2,3))
+wp3_1=np.mean(np.array(ztw1.variables['wp3']),(2,3))
+wp3_15=np.mean(np.array(ztw15.variables['wp3']),(2,3))
+wp3_3=np.mean(np.array(ztw3.variables['wp3']),(2,3))
+wp3_5=np.mean(np.array(ztw5.variables['wp3']),(2,3))
+wp3_5_op=np.mean(np.array(ztw5_op.variables['wp3']),(2,3))
+wp3_1_op=np.mean(np.array(ztw1_op.variables['wp3']),(2,3))
+wp3_clb=np.mean(np.array(clb.variables['wp3']),(2,3))
+
+ztw_pre89=Dataset('wrf_pre89/bomex_zt_wrf.nc')
+ztw_pre89_c15eq1=Dataset('wrf_pre89_c15eq1/bomex_zt_wrf.nc')
+ztw_pre89_c15eq5=Dataset('wrf_pre89_c15eq5/bomex_zt_wrf.nc')
+wp3_pre89=np.mean(np.array(ztw_pre89.variables['wp3']),(2,3))
+wp3_pre89_1=np.mean(np.array(ztw_pre89_c15eq1.variables['wp3']),(2,3))
+wp3_pre89_5=np.mean(np.array(ztw_pre89_c15eq5.variables['wp3']),(2,3))
+
+lwpc=np.mean(np.array(clbsfc.variables['lwp']),(1,2,3))
+
+
+
+
+
+fig, ax = plt.subplots()
+
+for t in range(0,360):
+    ax.cla()
+    ax.plot(wp3[t,:],alt,label='wrf-clubb c15=0')
+    ax.plot(wp3_05[t,:],alt,label='wrf-clubb c15=0.5')
+    ax.plot(wp3_1[t,:],alt,label='wrf-clubb c15=1.0')
+    ax.plot(wp3_15[t,:],alt,label='wrf-clubb c15=1.5')
+    ax.plot(wp3_3[t,:],alt,label='wrf-clubb c15=3')
+    ax.plot(wp3_5[t,:],alt,label='wrf-clubb c15=5')
+    ax.plot(wp3_1_op[t,:],alt,label='wrf-clubb oldp c15=1')
+    ax.plot(wp3_5_op[t,:],alt,label='wrf-clubb oldp c15=5')
+    ax.plot(wp3_pre89[t,:],alt,':',label='wrf-clubb pre89 c15=0.4')
+    ax.plot(wp3_pre89_1[t,:],alt,':',label='wrf-clubb pre89 c15=1')
+    ax.plot(wp3_pre89_5[t,:],alt,':',label='wrf-clubb pre89 c15=5')
+    ax.plot(wp3_clb[t,:],alt,'k--',label='clubb-scm c15=0')
+    ax.set_xlabel('wp3 [m3/s3]')
+    ax.set_ylabel('height [m]')
+    ax.set_xlim(-0.1,0.8)
+    ax.legend()
+    ax.set_title("t = {}".format(t))
+    plt.pause(0.05)
+
+ax.cla()
+
+
+
+fig, ax = plt.subplots()
+
+for t in range(0,360):
+    ax.cla()
+    ax.plot(clb_wp3_m[t,:],label='clb m')
+    ax.plot(clb_wp3_nm[t,:],label='clb nm')
+    ax.plot(wrf_wp3_m[t,:],label='wrf m')
+    ax.plot(wrf_wp3_nm[t,:],label='wrf nm')
+    ax.plot(wp3_samm[t,:],label='sam m')
+    ax.plot(wp3_samnm[t,:],label='sam nm')
+    ax.set_xlabel('wp3 [m3/s3]')
+    ax.set_ylabel('height [m]')
+    ax.set_ylim(-0.1,0.8)
+    ax.legend()
+    ax.set_title("t = {}".format(t))
+    plt.pause(0.05)
+
+ax.cla()
+
+
+
+
+
+fig, ax = plt.subplots()
+
+
+fig = plt.figure()
+for t in range(1,361):
+    ax1=fig.add_subplot(2,1,1)
+    ax1.cla()
+    ax1.plot(wp3_clb[t,:],alt,label='clubb-scm c15=0')
+    ax1.set_xlabel('wp3 [m3/s3]')
+    ax1.set_ylabel('height [m]')
+    ax1.set_xlim(-0.1,0.8)
+    ax1.legend()
+    ax1.set_title("t = {}".format(t))
+    ax2=fig.add_subplot(2,1,2)
+    ax2.cla()
+    ax2.plot(lwpc[0:t])
+    ax2.set_xlabel('time [min]')
+    ax2.set_ylabel('LWP [kg/m2]')
+    ax2.set_xlim(0,360)
+    ax2.set_ylim(0,max(lwp))
+    #ax.legend()
+    #ax.set_title("t = {}".format(t))
+    plt.pause(0.05)
+
+ax.cla()
+
+
+
+
+
+from netCDF4 import Dataset
+import numpy as np
+import matplotlib.pyplot as plt
+
+wzt=Dataset('/home/stepheba/new/old_wrf/WRF/test/em_quarter_ss/WRF_CURR_DFLT/bomex_zt_wrf.nc')
+wzm=Dataset('/home/stepheba/new/old_wrf/WRF/test/em_quarter_ss/WRF_CURR_DFLT/bomex_zm_wrf.nc')
+wsfc=Dataset('/home/stepheba/new/old_wrf/WRF/test/em_quarter_ss/WRF_CURR_DFLT/bomex_sfc_wrf.nc')
+czt=Dataset('/home/stepheba/new/old_clubb/newdefault/bomex_zt_wrf.nc')
+czm=Dataset('/home/stepheba/new/old_clubb/newdefault/bomex_zm_wrf.nc')
+csfc=Dataset('/home/stepheba/new/old_clubb/newdefault/bomex_sfc_wrf.nc')
+
+wlwp=np.mean(np.array(wsfc.variables['lwp']),(1,2,3))
+clwp=np.mean(np.array(csfc.variables['lwp']),(1,2,3))
+
+wwp3=np.mean(np.array(wzt.variables['wp3']),(2,3))
+cwp3=np.mean(np.array(czt.variables['wp3']),(2,3))
+
+
+zt3w=Dataset('/home/stepheba/new/wrf/WRF/test/em_quarter_ss/tests/test_params/wrfC2nu2_nock8_gamma/bomex_zt_wrf.nc')
+zt3c=Dataset('/home/stepheba/new/clubb/BAS/test_params/clbC2nu2_nock8_gamma/bomex_zt_wrf.nc')
+
+zt35w=Dataset('/home/stepheba/new/wrf/WRF/test/em_quarter_ss/wrf_cK8eq35/bomex_zt_wrf.nc')
+zt35c=Dataset('/home/stepheba/new/clubb/clb_cK8eq35/bomex_zt_wrf.nc')
+
+zt375w=Dataset('/home/stepheba/new/wrf/WRF/test/em_quarter_ss/wrf_cK8eq375/bomex_zt_wrf.nc')
+zt375c=Dataset('/home/stepheba/new/clubb/clb_cK8eq375/bomex_zt_wrf.nc')
+
+zt38w=Dataset('/home/stepheba/new/wrf/WRF/test/em_quarter_ss/wrf_cK8eq38/bomex_zt_wrf.nc')
+zt38c=Dataset('/home/stepheba/new/clubb/clb_cK8eq38/bomex_zt_wrf.nc')
+
+zt39w=Dataset('/home/stepheba/new/wrf/WRF/test/em_quarter_ss/wrf_cK8eq39/bomex_zt_wrf.nc')
+zt39c=Dataset('/home/stepheba/new/clubb/clb_cK8eq39/bomex_zt_wrf.nc')
+
+zt4w=Dataset('/home/stepheba/new/wrf/WRF/test/em_quarter_ss/wrf_cK8eq4/bomex_zt_wrf.nc')
+zt4c=Dataset('/home/stepheba/new/clubb/clb_cK8eq4/bomex_zt_wrf.nc')
+
+zt425w=Dataset('/home/stepheba/new/wrf/WRF/test/em_quarter_ss/wrf_cK8eq425/bomex_zt_wrf.nc')
+zt425c=Dataset('/home/stepheba/new/clubb/clb_cK8eq425/bomex_zt_wrf.nc')
+
+zt45w=Dataset('/home/stepheba/new/wrf/WRF/test/em_quarter_ss/wrf_cK8eq45/bomex_zt_wrf.nc')
+zt45c=Dataset('/home/stepheba/new/clubb/clb_cK8eq45/bomex_zt_wrf.nc')
+
+zt5w=Dataset('/home/stepheba/new/wrf/WRF/test/em_quarter_ss/tests/test_params/wrfC2nu2gamma/bomex_zt_wrf.nc')
+zt5c=Dataset('/home/stepheba/new/clubb/BAS/test_params/clbC2nu2gamma/bomex_zt_wrf.nc')
+
+altw=np.array(zt3w.variables['altitude'])
+altc=np.array(zt3c.variables['altitude'])
+
+wp3_dp1_3w=np.mean(np.array(zt3w.variables['wp3_dp1']),(2,3))
+wp3_dp1_3c=np.mean(np.array(zt3c.variables['wp3_dp1']),(2,3))
+
+wp3_dp1_35w=np.mean(np.array(zt35w.variables['wp3_dp1']),(2,3))
+wp3_dp1_35c=np.mean(np.array(zt35c.variables['wp3_dp1']),(2,3))
+
+wp3_dp1_375w=np.mean(np.array(zt375w.variables['wp3_dp1']),(2,3))
+wp3_dp1_375c=np.mean(np.array(zt375c.variables['wp3_dp1']),(2,3))
+
+wp3_dp1_38w=np.mean(np.array(zt38w.variables['wp3_dp1']),(2,3))
+wp3_dp1_38c=np.mean(np.array(zt38c.variables['wp3_dp1']),(2,3))
+
+wp3_dp1_39w=np.mean(np.array(zt39w.variables['wp3_dp1']),(2,3))
+wp3_dp1_39c=np.mean(np.array(zt39c.variables['wp3_dp1']),(2,3))
+
+wp3_dp1_4w=np.mean(np.array(zt4w.variables['wp3_dp1']),(2,3))
+wp3_dp1_4c=np.mean(np.array(zt4c.variables['wp3_dp1']),(2,3))
+
+wp3_dp1_425w=np.mean(np.array(zt425w.variables['wp3_dp1']),(2,3))
+wp3_dp1_425c=np.mean(np.array(zt425c.variables['wp3_dp1']),(2,3))
+
+wp3_dp1_45w=np.mean(np.array(zt45w.variables['wp3_dp1']),(2,3))
+wp3_dp1_45c=np.mean(np.array(zt45c.variables['wp3_dp1']),(2,3))
+
+wp3_dp1_5w=np.mean(np.array(zt5w.variables['wp3_dp1']),(2,3))
+wp3_dp1_5c=np.mean(np.array(zt5c.variables['wp3_dp1']),(2,3))
+
+fig=plt.figure()
+ax=fig.add_subplot(3,3,1)
+im=ax.imshow(wp3_dp1_3w.T,origin='lower',cmap='rainbow',extent=[1,360,0,3500],aspect=0.05)
+fig.colorbar(im,ax=ax)
+im.set_clim(-0.005,0.01)
+ax.set_xlabel('time [min]')
+ax.set_ylabel('height [m]')
+ax.set_title('c_K8 = 3.0')
+ax=fig.add_subplot(3,3,2)
+im=ax.imshow(wp3_dp1_35w.T,origin='lower',cmap='rainbow',extent=[1,360,0,3500],aspect=0.05)
+fig.colorbar(im,ax=ax)
+im.set_clim(-0.005,0.01)
+ax.set_xlabel('time [min]')
+ax.set_ylabel('height [m]')
+ax.set_title('c_K8 = 3.5')
+ax=fig.add_subplot(3,3,3)
+im=ax.imshow(wp3_dp1_375w.T,origin='lower',cmap='rainbow',extent=[1,360,0,3500],aspect=0.05)
+fig.colorbar(im,ax=ax)
+im.set_clim(-0.005,0.01)
+ax.set_xlabel('time [min]')
+ax.set_ylabel('height [m]')
+ax.set_title('c_K8 = 3.75')
+ax=fig.add_subplot(3,3,4)
+im=ax.imshow(wp3_dp1_38w.T,origin='lower',cmap='rainbow',extent=[1,360,0,3500],aspect=0.05)
+fig.colorbar(im,ax=ax)
+im.set_clim(-0.005,0.01)
+ax.set_xlabel('time [min]')
+ax.set_ylabel('height [m]')
+ax.set_title('c_K8 = 3.8')
+ax=fig.add_subplot(3,3,5)
+im=ax.imshow(wp3_dp1_39w.T,origin='lower',cmap='rainbow',extent=[1,360,0,3500],aspect=0.05)
+fig.colorbar(im,ax=ax)
+im.set_clim(-0.005,0.01)
+ax.set_xlabel('time [min]')
+ax.set_ylabel('height [m]')
+ax.set_title('c_K8 = 3.9')
+ax=fig.add_subplot(3,3,6)
+im=ax.imshow(wp3_dp1_4w.T,origin='lower',cmap='rainbow',extent=[1,360,0,3500],aspect=0.05)
+fig.colorbar(im,ax=ax)
+im.set_clim(-0.005,0.01)
+ax.set_xlabel('time [min]')
+ax.set_ylabel('height [m]')
+ax.set_title('c_K8 = 4.0')
+ax=fig.add_subplot(3,3,7)
+im=ax.imshow(wp3_dp1_425w.T,origin='lower',cmap='rainbow',extent=[1,360,0,3500],aspect=0.05)
+fig.colorbar(im,ax=ax)
+im.set_clim(-0.005,0.01)
+ax.set_xlabel('time [min]')
+ax.set_ylabel('height [m]')
+ax.set_title('c_K8 = 4.25')
+ax=fig.add_subplot(3,3,8)
+im=ax.imshow(wp3_dp1_45w.T,origin='lower',cmap='rainbow',extent=[1,360,0,3500],aspect=0.05)
+fig.colorbar(im,ax=ax)
+im.set_clim(-0.005,0.01)
+ax.set_xlabel('time [min]')
+ax.set_ylabel('height [m]')
+ax.set_title('c_K8 = 4.5')
+ax=fig.add_subplot(3,3,9)
+im=ax.imshow(wp3_dp1_5w.T,origin='lower',cmap='rainbow',extent=[1,360,0,3500],aspect=0.05)
+fig.colorbar(im,ax=ax)
+im.set_clim(-0.005,0.01)
+ax.set_xlabel('time [min]')
+ax.set_ylabel('height [m]')
+ax.set_title('c_K8 = 5.0')
+plt.show()
+
+
+fig=plt.figure()
+ax=fig.add_subplot(3,3,1)
+im=ax.imshow(wp3_dp1_3c.T,origin='lower',cmap='rainbow',extent=[1,360,0,3500],aspect=0.05)
+fig.colorbar(im,ax=ax)
+im.set_clim(-0.005,0.01)
+ax.set_xlabel('time [min]')
+ax.set_ylabel('height [m]')
+ax.set_title('c_K8 = 3.0')
+ax=fig.add_subplot(3,3,2)
+im=ax.imshow(wp3_dp1_35c.T,origin='lower',cmap='rainbow',extent=[1,360,0,3500],aspect=0.05)
+fig.colorbar(im,ax=ax)
+im.set_clim(-0.005,0.01)
+ax.set_xlabel('time [min]')
+ax.set_ylabel('height [m]')
+ax.set_title('c_K8 = 3.5')
+ax=fig.add_subplot(3,3,3)
+im=ax.imshow(wp3_dp1_375c.T,origin='lower',cmap='rainbow',extent=[1,360,0,3500],aspect=0.05)
+fig.colorbar(im,ax=ax)
+im.set_clim(-0.005,0.01)
+ax.set_xlabel('time [min]')
+ax.set_ylabel('height [m]')
+ax.set_title('c_K8 = 3.75')
+ax=fig.add_subplot(3,3,4)
+im=ax.imshow(wp3_dp1_38c.T,origin='lower',cmap='rainbow',extent=[1,360,0,3500],aspect=0.05)
+fig.colorbar(im,ax=ax)
+im.set_clim(-0.005,0.01)
+ax.set_xlabel('time [min]')
+ax.set_ylabel('height [m]')
+ax.set_title('c_K8 = 3.8')
+ax=fig.add_subplot(3,3,5)
+im=ax.imshow(wp3_dp1_39c.T,origin='lower',cmap='rainbow',extent=[1,360,0,3500],aspect=0.05)
+fig.colorbar(im,ax=ax)
+im.set_clim(-0.005,0.01)
+ax.set_xlabel('time [min]')
+ax.set_ylabel('height [m]')
+ax.set_title('c_K8 = 3.9')
+ax=fig.add_subplot(3,3,6)
+im=ax.imshow(wp3_dp1_4c.T,origin='lower',cmap='rainbow',extent=[1,360,0,3500],aspect=0.05)
+fig.colorbar(im,ax=ax)
+im.set_clim(-0.005,0.01)
+ax.set_xlabel('time [min]')
+ax.set_ylabel('height [m]')
+ax.set_title('c_K8 = 4.0')
+ax=fig.add_subplot(3,3,7)
+im=ax.imshow(wp3_dp1_425c.T,origin='lower',cmap='rainbow',extent=[1,360,0,3500],aspect=0.05)
+fig.colorbar(im,ax=ax)
+im.set_clim(-0.005,0.01)
+ax.set_xlabel('time [min]')
+ax.set_ylabel('height [m]')
+ax.set_title('c_K8 = 4.25')
+ax=fig.add_subplot(3,3,8)
+im=ax.imshow(wp3_dp1_45c.T,origin='lower',cmap='rainbow',extent=[1,360,0,3500],aspect=0.05)
+fig.colorbar(im,ax=ax)
+im.set_clim(-0.005,0.01)
+ax.set_xlabel('time [min]')
+ax.set_ylabel('height [m]')
+ax.set_title('c_K8 = 4.5')
+ax=fig.add_subplot(3,3,9)
+im=ax.imshow(wp3_dp1_5c.T,origin='lower',cmap='rainbow',extent=[1,360,0,3500],aspect=0.05)
+fig.colorbar(im,ax=ax)
+im.set_clim(-0.005,0.01)
+ax.set_xlabel('time [min]')
+ax.set_ylabel('height [m]')
+ax.set_title('c_K8 = 5.0')
+plt.show()
+
+
+
+plt.plot(np.mean(wp3_dp1_3c[181:360],0),altc,label='clb,cK8 = 3.0')
+plt.plot(np.mean(wp3_dp1_35c[181:360],0),altc,label='clb,cK8 = 3.5')
+plt.plot(np.mean(wp3_dp1_375c[181:360],0),altc,label='clb,cK8 = 3.75')
+plt.plot(np.mean(wp3_dp1_38c[181:360],0),altc,label='clb,cK8 = 3.8')
+plt.plot(np.mean(wp3_dp1_39c[181:360],0),altc,label='clb,cK8 = 3.9')
+plt.plot(np.mean(wp3_dp1_4c[181:360],0),altc,label='clb,cK8 = 4.0')
+plt.plot(np.mean(wp3_dp1_425c[181:360],0),altc,label='clb,cK8 = 4.25')
+plt.plot(np.mean(wp3_dp1_45c[181:360],0),altc,label='clb,cK8 = 4.5')
+plt.plot(np.mean(wp3_dp1_5c[181:360],0),altc,label='clb,cK8 = 5.0')
+plt.plot(np.mean(wp3_dp1_3w[181:360],0),altw,':',label='wrf,cK8 = 3.0')
+plt.plot(np.mean(wp3_dp1_35w[181:360],0),altw,':',label='wrf,cK8 = 3.5')
+plt.plot(np.mean(wp3_dp1_375w[181:360],0),altw,':',label='wrf,cK8 = 3.75')
+plt.plot(np.mean(wp3_dp1_38w[181:360],0),altw,':',label='wrf,cK8 = 3.8')
+plt.plot(np.mean(wp3_dp1_39w[181:360],0),altw,':',label='wrf,cK8 = 3.9')
+plt.plot(np.mean(wp3_dp1_4w[181:360],0),altw,':',label='wrf,cK8 = 4.0')
+plt.plot(np.mean(wp3_dp1_425w[181:360],0),altw,':',label='wrf,cK8 = 4.25')
+plt.plot(np.mean(wp3_dp1_45w[181:360],0),altw,':',label='wrf,cK8 = 4.5')
+plt.plot(np.mean(wp3_dp1_5w[181:360],0),altw,':',label='wrf,cK8 = 5.0')
+plt.xlabel('wp3_dp1 [m/s]')
+plt.ylabel('height [m]')
+plt.legend()
+plt.show()
+
+
+
+plt.plot(wp3_dp1_3c,label='clb,cK8 = 3.0')
+plt.plot(wp3_dp1_35c,label='clb,cK8 = 3.5')
+plt.plot(wp3_dp1_375c,label='clb,cK8 = 3.75')
+plt.plot(wp3_dp1_38c,label='clb,cK8 = 3.8')
+plt.plot(wp3_dp1_39c,label='clb,cK8 = 3.9')
+plt.plot(wp3_dp1_4c,label='clb,cK8 = 4.0')
+plt.plot(wp3_dp1_425c,label='clb,cK8 = 4.25')
+plt.plot(wp3_dp1_45c,label='clb,cK8 = 4.5')
+plt.plot(wp3_dp1_5c,label='clb,cK8 = 5.0')
+plt.plot(wp3_dp1_3w,':',label='wrf,cK8 = 3.0')
+plt.plot(wp3_dp1_35w,':',label='wrf,cK8 = 3.5')
+plt.plot(wp3_dp1_375w,':',label='wrf,cK8 = 3.75')
+plt.plot(wp3_dp1_38w,':',label='wrf,cK8 = 3.8')
+plt.plot(wp3_dp1_39w,':',label='wrf,cK8 = 3.9')
+plt.plot(wp3_dp1_4w,':',label='wrf,cK8 = 4.0')
+plt.plot(wp3_dp1_425w,':',label='wrf,cK8 = 4.25')
+plt.plot(wp3_dp1_45w,':',label='wrf,cK8 = 4.5')
+plt.plot(wp3_dp1_5w,':',label='wrf,cK8 = 5.0')
+plt.ylabel('wp3_dp1 [m/s]')
+plt.xlabel('time [min]')
+plt.legend()
+plt.show()
+
+
+fig=plt.figure()
+ax=fig.add_subplot(2,2,1)
+im=ax.imshow(thlmc_def.T,origin='lower',cmap='rainbow',extent=[1,360,0,3500],aspect=0.05)
+fig.colorbar(im,ax=ax)
+#im.set_clim(-0.005,0.01)
+ax.set_xlabel('time [min]')
+ax.set_ylabel('height [m]')
+ax.set_title('thlm clb def.')
+ax=fig.add_subplot(2,2,2)
+im=ax.imshow(thlmw_def.T,origin='lower',cmap='rainbow',extent=[1,360,0,3500],aspect=0.05)
+fig.colorbar(im,ax=ax)
+#im.set_clim(-0.005,0.01)
+ax.set_xlabel('time [min]')
+ax.set_ylabel('height [m]')
+ax.set_title('thlm wrf def.')
+ax=fig.add_subplot(2,2,3)
+im=ax.imshow(thlmw_tau.T,origin='lower',cmap='rainbow',extent=[1,360,0,3500],aspect=0.05)
+fig.colorbar(im,ax=ax)
+#im.set_clim(-0.005,0.01)
+ax.set_xlabel('time [min]')
+ax.set_ylabel('height [m]')
+ax.set_title('thlm wrf w/ clubb tau-Lscale')
+ax=fig.add_subplot(2,2,4)
+im=ax.imshow(thlmw_thlm.T,origin='lower',cmap='rainbow',extent=[1,360,0,3500],aspect=0.05)
+fig.colorbar(im,ax=ax)
+#im.set_clim(-0.005,0.01)
+ax.set_xlabel('time [min]')
+ax.set_ylabel('height [m]')
+ax.set_title('thlm wrf w/ clubb thlm')
+
+
+from netCDF4 import Dataset
+import numpy as np
+import matplotlib.pyplot as plt
+
+
+ztw=Dataset('/home/stepheba/new/old_wrf/WRF/test/em_quarter_ss/WRF_CURR_DFLT/bomex_zt_wrf.nc')
+zmw=Dataset('/home/stepheba/new/old_wrf/WRF/test/em_quarter_ss/WRF_CURR_DFLT/bomex_zm_wrf.nc')
+ztc=Dataset('/home/stepheba/new/old_clubb/newdefault/bomex_zt_wrf.nc')
+zmc=Dataset('/home/stepheba/new/old_clubb/newdefault/bomex_zm_wrf.nc')
+
+
+tauzmw=np.mean(np.array(zmw.variables['tau_zm']),(2,3))
+tauzmc=np.mean(np.array(zmc.variables['tau_zm']),(2,3))
+wp2w=np.mean(np.array(zmw.variables['wp2']),(2,3))
+wp2c=np.mean(np.array(zmc.variables['wp2']),(2,3))
+wp3w=np.mean(np.array(ztw.variables['wp3']),(2,3))
+wp3c=np.mean(np.array(ztc.variables['wp3']),(2,3))
+lsw=np.mean(np.array(ztw.variables['Lscale']),(2,3))
+lsc=np.mean(np.array(ztc.variables['Lscale']),(2,3))
+
+
+fig, ax = plt.subplots()
+
+for t in range(0,360):
+    ax.cla()
+    ax.plot(wp3[t,:],alt,label=”wrf-clubb c15=0”)
+    ax.plot(wp3_05[t,:],alt,label=’wrf-clubb c15=0.5’)
+    ax.plot(wp3_1[t,:],alt,label=’wrf-clubb c15=1.0’)
+    ax.plot(wp3_15[t,:],alt,label=’wrf-clubb c15=1.5’)
+    ax.plot(wp3_clb[t,:],alt,’k--’,label=’clubb c15=0’)
+    ax.set_xlim(-0.1,1.5)
+    ax.legend()
+    ax.set_title("t = {}".format(t))
+    plt.pause(0.1)
+
+ax.cla()
+
+
+
+zmc=Dataset('/home/stepheba/new/old_clubb/output/bomex_zm.nc')
+ztc=Dataset('/home/stepheba/new/old_clubb/output/bomex_zt.nc')
+zmw=Dataset('/home/stepheba/new/old_wrf/WRF/test/em_quarter_ss/clubb_output/bomex_zm_wrf.nc')
+ztw=Dataset('/home/stepheba/new/old_wrf/WRF/test/em_quarter_ss/clubb_output/bomex_zt_wrf.nc')
+
+
+tauzmw=np.mean(np.array(zmw.variables['tau_zm']),(2,3))
+tauzmc=np.mean(np.array(zmc.variables['tau_zm']),(2,3))
+tauztw=np.mean(np.array(ztw.variables['tau_zt']),(2,3))
+tauztc=np.mean(np.array(ztc.variables['tau_zt']),(2,3))
+lsw=np.mean(np.array(ztw.variables['Lscale']),(2,3))
+lsc=np.mean(np.array(ztc.variables['Lscale']),(2,3))
+
+plt.imshow(lsw-lsc)
+plt.colorbar()
+plt.show()
+
+
+
+
+
+wp2=np.mean(np.array(zm.variables['wp2']),(2,3))
+wp3=np.mean(np.array(zt.variables['wp3']),(2,3))
+cf=np.mean(np.array(zt.variables['cloud_frac']),(2,3))
+um=np.mean(np.array(zt.variables['um']),(2,3))
+vm=np.mean(np.array(zt.variables['vm']),(2,3))
+upwp=np.mean(np.array(zm.variables['upwp']),(2,3))
+vpwp=np.mean(np.array(zm.variables['vpwp']),(2,3))
+up2=np.mean(np.array(zm.variables['up2']),(2,3))
+vp2=np.mean(np.array(zm.variables['vp2']),(2,3))
+
+
+fig=plt.figure()
+ax=fig.add_subplot(3,3,1)
+im=ax.imshow(cf.T,origin='lower',cmap='rainbow',extent=[1,360,0,3500],aspect=0.05)
+fig.colorbar(im,ax=ax)
+#im.set_clim(-0.005,0.01)
+ax.set_xlabel('time [min]')
+ax.set_ylabel('height [m]')
+ax.set_title('cloud_frac')
+ax=fig.add_subplot(3,3,2)
+im=ax.imshow(wp3.T,origin='lower',cmap='rainbow',extent=[1,360,0,3500],aspect=0.05)
+fig.colorbar(im,ax=ax)
+#im.set_clim(-0.005,0.01)
+ax.set_xlabel('time [min]')
+ax.set_ylabel('height [m]')
+ax.set_title('wp3')
+ax=fig.add_subplot(3,3,3)
+im=ax.imshow(wp2.T,origin='lower',cmap='rainbow',extent=[1,360,0,3500],aspect=0.05)
+fig.colorbar(im,ax=ax)
+#im.set_clim(-0.005,0.01)
+ax.set_xlabel('time [min]')
+ax.set_ylabel('height [m]')
+ax.set_title('wp2')
+ax=fig.add_subplot(3,3,4)
+im=ax.imshow(upwp.T,origin='lower',cmap='rainbow',extent=[1,360,0,3500],aspect=0.05)
+fig.colorbar(im,ax=ax)
+#im.set_clim(-0.005,0.01)
+ax.set_xlabel('time [min]')
+ax.set_ylabel('height [m]')
+ax.set_title('upwp')
+ax=fig.add_subplot(3,3,5)
+im=ax.imshow(vpwp.T,origin='lower',cmap='rainbow',extent=[1,360,0,3500],aspect=0.05)
+fig.colorbar(im,ax=ax)
+#im.set_clim(-0.005,0.01)
+ax.set_xlabel('time [min]')
+ax.set_ylabel('height [m]')
+ax.set_title('vpwp')
+ax=fig.add_subplot(3,3,6)
+im=ax.imshow(um.T,origin='lower',cmap='rainbow',extent=[1,360,0,3500],aspect=0.05)
+fig.colorbar(im,ax=ax)
+#im.set_clim(-0.005,0.01)
+ax.set_xlabel('time [min]')
+ax.set_ylabel('height [m]')
+ax.set_title('um')
+ax=fig.add_subplot(3,3,7)
+im=ax.imshow(vm.T,origin='lower',cmap='rainbow',extent=[1,360,0,3500],aspect=0.05)
+fig.colorbar(im,ax=ax)
+#im.set_clim(-0.005,0.01)
+ax.set_xlabel('time [min]')
+ax.set_ylabel('height [m]')
+ax.set_title('vm')
+ax=fig.add_subplot(3,3,8)
+im=ax.imshow(up2.T,origin='lower',cmap='rainbow',extent=[1,360,0,3500],aspect=0.05)
+fig.colorbar(im,ax=ax)
+#im.set_clim(-0.005,0.01)
+ax.set_xlabel('time [min]')
+ax.set_ylabel('height [m]')
+ax.set_title('up2')
+ax=fig.add_subplot(3,3,9)
+im=ax.imshow(vp2.T,origin='lower',cmap='rainbow',extent=[1,360,0,3500],aspect=0.05)
+fig.colorbar(im,ax=ax)
+#im.set_clim(-0.005,0.01)
+ax.set_xlabel('time [min]')
+ax.set_ylabel('height [m]')
+ax.set_title('vp2')
+plt.show()
+
+
+
+
+wrfold=Dataset('/home/stepheba/new/wrf/WRF/test/em_quarter_ss/oldparams/bomex_zt_wrf.nc')
+wrfnew=Dataset('/home/stepheba/new/wrf/WRF/test/em_quarter_ss/newparams/bomex_zt_wrf.nc')
+clbold=Dataset('/home/stepheba/new/clubb/oldparams/bomex_zt_wrf.nc')
+clbnew=Dataset('/home/stepheba/new/clubb/newparams/bomex_zt_wrf.nc')
+
+thvmwo=np.mean(np.array(wrfold.variables['thvm']),(2,3))
+thvmwn=np.mean(np.array(wrfnew.variables['thvm']),(2,3))
+thvmco=np.mean(np.array(clbold.variables['thvm']),(2,3))
+thvmcn=np.mean(np.array(clbnew.variables['thvm']),(2,3))
+
+
+wrf=Dataset('wrfout.nc')
+#wrfnoc=Dataset('no_cumulus/wrfout.nc')
+
+t=np.array(wrf.variables['T'])+300
+ph=np.array(wrf.variables['PH'])
+phb=np.array(wrf.variables['PHB'])
+ht=(ph+phb)/9.81
+ht2=np.zeros((73,87,3,3))
+for k in range(0,87):
+     ht2[:,k,:,:]=0.5*(ht[:,k,:,:]+ht[:,k+1,:,:])
+
+w=np.array(wrf.variables['V'])
+
+for i in range(0,3):
+     for j in range(0,3):
+           plt.plot(.01*i+.01*j+np.mean(w[:,:,j,i],0),np.mean(ht2[:,:,:,:],(0,2,3)),label='column({},{})'.format(i,j))
+
+i=0
+j=3
+plt.plot(.01*i+.01*j+np.mean(w[:,:,j,i],0),np.mean(ht2[:,:,:,:],(0,2,3)),':',label='column({},{})'.format(i,j))
+
+i=1
+j=3
+plt.plot(.01*i+.01*j+np.mean(w[:,:,j,i],0),np.mean(ht2[:,:,:,:],(0,2,3)),':',label='column({},{})'.format(i,j))
+
+i=2
+j=3
+plt.plot(.01*i+.01*j+np.mean(w[:,:,j,i],0),np.mean(ht2[:,:,:,:],(0,2,3)),':',label='column({},{})'.format(i,j))
+
+plt.plot(np.mean(w[:,:,:,:],(0,2,3)),np.mean(ht2[:,:,:,:],(0,2,3)),'k:',label='average')
+plt.xlabel('w [m/s]')
+plt.ylabel('height [m]')
+plt.title('BOMEX w/o "cumulus"')
+plt.legend()
+plt.show()
+
+plt.plot((np.mean(w[:,:,1,0],0)+np.mean(w[:,:,1,1],0)+np.mean(w[:,:,1,2],0)+np.mean(w[:,:,3,0],0)+np.mean(w[:,:,3,1],0)+np.mean(w[:,:,3,2],0))/6)
+
+plt.plot((np.mean(w[:,:,0,0],0)+np.mean(w[:,:,0,1],0)+np.mean(w[:,:,0,2],0)+np.mean(w[:,:,1,0],0)+np.mean(w[:,:,1,1],0)+np.mean(w[:,:,1,2],0)+np.mean(w[:,:,2,0],0)+np.mean(w[:,:,2,1],0)+np.mean(w[:,:,2,2],0)+np.mean(w[:,:,3,0],0)+np.mean(w[:,:,3,1],0)+np.mean(w[:,:,3,2],0))/12)
+
+
+
+
+
+from netCDF4 import Dataset
+import numpy as np
+import matplotlib.pyplot as plt
+
+wrf_zt=Dataset('/home/stepheba/new/wrf/WRF/test/em_quarter_ss/WRF_CURR_DFLT/bomex_zt_wrf.nc')
+clb_zt=Dataset('/home/stepheba/new/clubb/newdefault/bomex_zt_wrf.nc')
+wrf_zm=Dataset('/home/stepheba/new/wrf/WRF/test/em_quarter_ss/WRF_CURR_DFLT/bomex_zm_wrf.nc')
+clb_zm=Dataset('/home/stepheba/new/clubb/newdefault/bomex_zm_wrf.nc')
+
+tauw=np.mean(np.array(wrf_zt.variables['tau_zt']),(2,3))
+tauc=np.mean(np.array(clb_zt.variables['tau_zt']),(2,3))
+cfw=np.mean(np.array(wrf_zt.variables['cloud_frac']),(2,3))
+cfc=np.mean(np.array(clb_zt.variables['cloud_frac']),(2,3))
+wp2w=np.mean(np.array(wrf_zm.variables['wp2']),(2,3))
+wp2c=np.mean(np.array(clb_zm.variables['wp2']),(2,3))
+wp3w=np.mean(np.array(wrf_zt.variables['wp3']),(2,3))
+wp3c=np.mean(np.array(clb_zt.variables['wp3']),(2,3))
+up2w=np.mean(np.array(wrf_zm.variables['up2']),(2,3))
+up2c=np.mean(np.array(clb_zm.variables['up2']),(2,3))
+vp2w=np.mean(np.array(wrf_zm.variables['vp2']),(2,3))
+vp2c=np.mean(np.array(clb_zm.variables['vp2']),(2,3))
+upwpw=np.mean(np.array(wrf_zm.variables['upwp']),(2,3))
+upwpc=np.mean(np.array(clb_zm.variables['upwp']),(2,3))
+vpwpw=np.mean(np.array(wrf_zm.variables['vpwp']),(2,3))
+vpwpc=np.mean(np.array(clb_zm.variables['vpwp']),(2,3))
+umw=np.mean(np.array(wrf_zt.variables['um']),(2,3))
+umc=np.mean(np.array(clb_zt.variables['um']),(2,3))
+vmw=np.mean(np.array(wrf_zt.variables['vm']),(2,3))
+vmc=np.mean(np.array(clb_zt.variables['vm']),(2,3))
+lsw=np.mean(np.array(wrf_zt.variables['Lscale']),(2,3))
+lsc=np.mean(np.array(clb_zt.variables['Lscale']),(2,3))
+wp4w=np.mean(np.array(wrf_zm.variables['wp4']),(2,3))
+wp4c=np.mean(np.array(clb_zm.variables['wp4']),(2,3))
+wpthlpw=np.mean(np.array(wrf_zm.variables['wpthlp']),(2,3))
+wpthlpc=np.mean(np.array(clb_zm.variables['wpthlp']),(2,3))
+wprtpw=np.mean(np.array(wrf_zm.variables['wprtp']),(2,3))
+wprtpc=np.mean(np.array(clb_zm.variables['wprtp']),(2,3))
+rtp2w=np.mean(np.array(wrf_zm.variables['rtp2']),(2,3))
+rtp2c=np.mean(np.array(clb_zm.variables['rtp2']),(2,3))
+thlp2w=np.mean(np.array(wrf_zm.variables['thlp2']),(2,3))
+thlp2c=np.mean(np.array(clb_zm.variables['thlp2']),(2,3))
+
+fig=plt.figure()
+ax=fig.add_subplot(4,4,1)
+im=ax.imshow(cfw[0:120,:].T-cfc[0:120,:].T,origin='lower',cmap='rainbow',extent=[1,120,0,3500],aspect=0.01)
+fig.colorbar(im,ax=ax)
+#im.set_clim(0,1100)
+ax.set_xlabel('time [min]')
+ax.set_ylabel('height [m]')
+ax.set_title('cloud_frac')
+ax=fig.add_subplot(4,4,2)
+im=ax.imshow(tauw[0:120,:].T-tauc[0:120,:].T,origin='lower',cmap='rainbow',extent=[1,120,0,3500],aspect=0.01)
+fig.colorbar(im,ax=ax)
+#im.set_clim(0,1100)
+ax.set_xlabel('time [min]')
+ax.set_ylabel('height [m]')
+ax.set_title('tau')
+ax=fig.add_subplot(4,4,3)
+im=ax.imshow(wp2w[0:120,:].T-wp2c[0:120,:].T,origin='lower',cmap='rainbow',extent=[1,120,0,3500],aspect=0.01)
+fig.colorbar(im,ax=ax)
+#im.set_clim(0,1100)
+ax.set_xlabel('time [min]')
+ax.set_ylabel('height [m]')
+ax.set_title('wp2')
+ax=fig.add_subplot(4,4,4)
+im=ax.imshow(wp3w[0:120,:].T-wp3c[0:120,:].T,origin='lower',cmap='rainbow',extent=[1,120,0,3500],aspect=0.01)
+fig.colorbar(im,ax=ax)
+#im.set_clim(0,1100)
+ax.set_xlabel('time [min]')
+ax.set_ylabel('height [m]')
+ax.set_title('wp3')
+ax=fig.add_subplot(4,4,5)
+im=ax.imshow(up2w[0:120,:].T-up2c[0:120,:].T,origin='lower',cmap='rainbow',extent=[1,120,0,3500],aspect=0.01)
+fig.colorbar(im,ax=ax)
+#im.set_clim(0,1100)
+ax.set_xlabel('time [min]')
+ax.set_ylabel('height [m]')
+ax.set_title('up2')
+ax=fig.add_subplot(4,4,6)
+im=ax.imshow(vp2w[0:120,:].T-vp2c[0:120,:].T,origin='lower',cmap='rainbow',extent=[1,120,0,3500],aspect=0.01)
+fig.colorbar(im,ax=ax)
+#im.set_clim(0,1100)
+ax.set_xlabel('time [min]')
+ax.set_ylabel('height [m]')
+ax.set_title('vp2')
+ax=fig.add_subplot(4,4,7)
+im=ax.imshow(umw[0:120,:].T-umc[0:120,:].T,origin='lower',cmap='rainbow',extent=[1,120,0,3500],aspect=0.01)
+fig.colorbar(im,ax=ax)
+#im.set_clim(0,1100)
+ax.set_xlabel('time [min]')
+ax.set_ylabel('height [m]')
+ax.set_title('um')
+ax=fig.add_subplot(4,4,8)
+im=ax.imshow(vmw[0:120,:].T-vmc[0:120,:].T,origin='lower',cmap='rainbow',extent=[1,120,0,3500],aspect=0.01)
+fig.colorbar(im,ax=ax)
+#im.set_clim(0,1100)
+ax.set_xlabel('time [min]')
+ax.set_ylabel('height [m]')
+ax.set_title('vm')
+ax=fig.add_subplot(4,4,9)
+im=ax.imshow(vpwpw[0:120,:].T-vpwpc[0:120,:].T,origin='lower',cmap='rainbow',extent=[1,120,0,3500],aspect=0.01)
+fig.colorbar(im,ax=ax)
+#im.set_clim(0,1100)
+ax.set_xlabel('time [min]')
+ax.set_ylabel('height [m]')
+ax.set_title('vpwp')
+ax=fig.add_subplot(4,4,10)
+im=ax.imshow(upwpw[0:120,:].T-upwpc[0:120,:].T,origin='lower',cmap='rainbow',extent=[1,120,0,3500],aspect=0.01)
+fig.colorbar(im,ax=ax)
+#im.set_clim(0,1100)
+ax.set_xlabel('time [min]')
+ax.set_ylabel('height [m]')
+ax.set_title('upwp')
+ax=fig.add_subplot(4,4,11)
+im=ax.imshow(lsw[0:120,:].T-lsc[0:120,:].T,origin='lower',cmap='rainbow',extent=[1,120,0,3500],aspect=0.01)
+fig.colorbar(im,ax=ax)
+#im.set_clim(0,1100)
+ax.set_xlabel('time [min]')
+ax.set_ylabel('height [m]')
+ax.set_title('Lscale')
+ax=fig.add_subplot(4,4,12)
+im=ax.imshow(wp4w[0:120,:].T-wp4c[0:120,:].T,origin='lower',cmap='rainbow',extent=[1,120,0,3500],aspect=0.01)
+fig.colorbar(im,ax=ax)
+#im.set_clim(0,1100)
+ax.set_xlabel('time [min]')
+ax.set_ylabel('height [m]')
+ax.set_title('wp4')
+ax=fig.add_subplot(4,4,13)
+im=ax.imshow(wpthlpw[0:120,:].T-wpthlpc[0:120,:].T,origin='lower',cmap='rainbow',extent=[1,120,0,3500],aspect=0.01)
+fig.colorbar(im,ax=ax)
+#im.set_clim(0,1100)
+ax.set_xlabel('time [min]')
+ax.set_ylabel('height [m]')
+ax.set_title('wpthlp')
+ax=fig.add_subplot(4,4,14)
+im=ax.imshow(wprtpw[0:120,:].T-wprtpc[0:120,:].T,origin='lower',cmap='rainbow',extent=[1,120,0,3500],aspect=0.01)
+fig.colorbar(im,ax=ax)
+#im.set_clim(0,1100)
+ax.set_xlabel('time [min]')
+ax.set_ylabel('height [m]')
+ax.set_title('wprtp')
+ax=fig.add_subplot(4,4,15)
+im=ax.imshow(thlp2w[0:120,:].T-thlp2c[0:120,:].T,origin='lower',cmap='rainbow',extent=[1,120,0,3500],aspect=0.01)
+fig.colorbar(im,ax=ax)
+#im.set_clim(0,1100)
+ax.set_xlabel('time [min]')
+ax.set_ylabel('height [m]')
+ax.set_title('thlp2')
+ax=fig.add_subplot(4,4,16)
+im=ax.imshow(rtp2w[0:120,:].T-rtp2c[0:120,:].T,origin='lower',cmap='rainbow',extent=[1,120,0,3500],aspect=0.01)
+fig.colorbar(im,ax=ax)
+#im.set_clim(0,1100)
+ax.set_xlabel('time [min]')
+ax.set_ylabel('height [m]')
+ax.set_title('rtp2')
+plt.show()
+
+
+
+##second Y axis
+fig, ax1 = plt.subplots()
+color = 'tab:red'
+ax1.set_xlabel('time [min]')
+ax1.set_ylabel('thvm [K]', color=color)
+ax1.plot(thv[40:60,30], color=color)
+ax1.tick_params(axis='y', labelcolor=color)
+
+ax2 = ax1.twinx()  # instantiate a second axes that shares the same x-axis
+
+color = 'tab:blue'
+ax2.set_ylabel('cloud_frac', color=color)  # we already handled the x-label with ax1
+ax2.plot(cf[40:60,30], color=color)
+ax2.tick_params(axis='y', labelcolor=color)
+
+fig.tight_layout()  # otherwise the right y-label is slightly clipped
+plt.show()
+
+
+
+vpwp=np.mean(np.array(zm3.variables['vpwp']),(2,3))
+vpwp_bt=np.mean(np.array(zm3.variables['vpwp_bt']),(2,3))
+vpwp_ma=np.mean(np.array(zm3.variables['vpwp_ma']),(2,3))
+vpwp_ta=np.mean(np.array(zm3.variables['vpwp_ta']),(2,3))
+vpwp_tp=np.mean(np.array(zm3.variables['vpwp_tp']),(2,3))
+vpwp_ac=np.mean(np.array(zm3.variables['vpwp_ac']),(2,3))
+vpwp_bp=np.mean(np.array(zm3.variables['vpwp_bp']),(2,3))
+vpwp_pr1=np.mean(np.array(zm3.variables['vpwp_pr1']),(2,3))
+vpwp_pr2=np.mean(np.array(zm3.variables['vpwp_pr2']),(2,3))
+vpwp_pr3=np.mean(np.array(zm3.variables['vpwp_pr3']),(2,3))
+vpwp_pr4=np.mean(np.array(zm3.variables['vpwp_pr4']),(2,3))
+vpwp_dp1=np.mean(np.array(zm3.variables['vpwp_dp1']),(2,3))
+vpwp_mfl=np.mean(np.array(zm3.variables['vpwp_mfl']),(2,3))
+vpwp_cl=np.mean(np.array(zm3.variables['vpwp_cl']),(2,3))
+alt=np.array(zm3.variables['altitude'])
+
+time1=45
+time2=70
+x=np.arange(time1,time2)
+plt.plot(x,vpwp[time1:time2,30]*0.1,':',label='vpwp*0.1')
+plt.plot(x,vpwp_ma[time1:time2,30],label='vpwp_ma')
+plt.plot(x,vpwp_ta[time1:time2,30],label='vpwp_ta')
+plt.plot(x,vpwp_tp[time1:time2,30],label='vpwp_tp')
+plt.plot(x,vpwp_ac[time1:time2,30],label='vpwp_ac')
+plt.plot(x,vpwp_bp[time1:time2,30],label='vpwp_bp')
+plt.plot(x,vpwp_pr1[time1:time2,30],label='vpwp_pr1')
+plt.plot(x,vpwp_pr2[time1:time2,30],label='vpwp_pr2')
+plt.plot(x,vpwp_pr3[time1:time2,30],label='vpwp_pr3')
+plt.plot(x,vpwp_pr4[time1:time2,30],label='vpwp_pr4')
+plt.plot(x,vpwp_dp1[time1:time2,30],label='vpwp_dp1')
+plt.plot(x,vpwp_mfl[time1:time2,30],label='vpwp_mfl')
+plt.plot(x,vpwp_cl[time1:time2,30],label='vpwp_cl')
+plt.xlabel('time [min]')
+plt.ylabel('m2/s3')
+plt.legend()
+plt.show()
+
+
+
+
+from netCDF4 import Dataset
+import numpy as np
+import matplotlib.pyplot as plt
+import scipy.stats
+
+zt1=Dataset('CLB_CURR_DFLT/bomex_zt_wrf.nc')
+zt2=Dataset('BAS/dt10_ldiag_eq_T/bomex_zt_wrf.nc')
+zt3=Dataset('dt1_normal/bomex_zt_wrf.nc')
+zt4=Dataset('dt01_normal/bomex_zt_wrf.nc')
+
+zm1=Dataset('CLB_CURR_DFLT/bomex_zm_wrf.nc')
+zm2=Dataset('BAS/dt10_ldiag_eq_T/bomex_zm_wrf.nc')
+zm3=Dataset('dt1_normal/bomex_zm_wrf.nc')
+zm4=Dataset('dt01_normal/bomex_zm_wrf.nc')
+
+cf1=np.mean(np.array(zt1.variables['cloud_frac']),(2,3))
+cf2=np.mean(np.array(zt2.variables['cloud_frac']),(2,3))
+cf3=np.mean(np.array(zt3.variables['cloud_frac']),(2,3))
+cf4=np.mean(np.array(zt4.variables['cloud_frac']),(2,3))
+
+
+um1=np.mean(np.array(zt1.variables['um']),(2,3))
+vm1=np.mean(np.array(zt1.variables['vm']),(2,3))
+upwp1=np.mean(np.array(zm1.variables['upwp']),(2,3))
+vpwp1=np.mean(np.array(zm1.variables['vpwp']),(2,3))
+um2=np.mean(np.array(zt2.variables['um']),(2,3))
+vm2=np.mean(np.array(zt2.variables['vm']),(2,3))
+upwp2=np.mean(np.array(zm2.variables['upwp']),(2,3))
+vpwp2=np.mean(np.array(zm2.variables['vpwp']),(2,3))
+um3=np.mean(np.array(zt3.variables['um']),(2,3))
+vm3=np.mean(np.array(zt3.variables['vm']),(2,3))
+upwp3=np.mean(np.array(zm3.variables['upwp']),(2,3))
+vpwp3=np.mean(np.array(zm3.variables['vpwp']),(2,3))
+um4=np.mean(np.array(zt4.variables['um']),(2,3))
+vm4=np.mean(np.array(zt4.variables['vm']),(2,3))
+upwp4=np.mean(np.array(zm4.variables['upwp']),(2,3))
+vpwp4=np.mean(np.array(zm4.variables['vpwp']),(2,3))
+
+level=30
+fig=plt.figure()
+ax=fig.add_subplot(2,2,1)
+ax.plot(um1[:,level],label='dt=60')
+ax.plot(um2[:,level],label='dt=10')
+ax.plot(um3[:,level],label='dt=1')
+ax.plot(um4[:,level],label='dt=0.1')
+ax.set_xlabel('time [min]')
+ax.set_ylabel('um [m/s]')
+ax.set_title('um')
+ax.legend()
+ax=fig.add_subplot(2,2,2)
+ax.plot(vm1[:,level],label='dt=60')
+ax.plot(vm2[:,level],label='dt=10')
+ax.plot(vm3[:,level],label='dt=1')
+ax.plot(vm4[:,level],label='dt=0.1')
+ax.set_xlabel('time [min]')
+ax.set_ylabel('vm [m/s]')
+ax.set_title('vm')
+ax.legend()
+ax=fig.add_subplot(2,2,3)
+ax.plot(upwp1[:,level],label='dt=60')
+ax.plot(upwp2[:,level],label='dt=10')
+ax.plot(upwp3[:,level],label='dt=1')
+ax.plot(upwp4[:,level],label='dt=0.1')
+ax.set_xlabel('time [min]')
+ax.set_ylabel('upwp [m2/s2]')
+ax.set_title('upwp')
+ax.legend()
+ax=fig.add_subplot(2,2,4)
+ax.plot(vpwp1[:,level],label='dt=60')
+ax.plot(vpwp2[:,level],label='dt=10')
+ax.plot(vpwp3[:,level],label='dt=1')
+ax.plot(vpwp4[:,level],label='dt=0.1')
+ax.set_xlabel('time [min]')
+ax.set_ylabel('vpwp [m2/s2]')
+ax.set_title('vpwp')
+ax.legend()
+fig.suptitle('height = {}'.format(alt[level]))
+plt.show()
+
+
+
+fig=plt.figure()
+ax=fig.add_subplot(2,1,1)
+im=ax.imshow(thvmwo.T-thvmco.T,origin='lower',cmap='rainbow',extent=[1,360,0,3500],aspect=0.05)
+fig.colorbar(im,ax=ax)
+im.set_clim(-1,1)
+ax.set_xlabel('time [min]')
+ax.set_ylabel('height [m]')
+ax.set_title('dthvm diff old')
+ax=fig.add_subplot(2,1,2)
+im=ax.imshow(thvmwn.T-thvmcn.T,origin='lower',cmap='rainbow',extent=[1,360,0,3500],aspect=0.05)
+fig.colorbar(im,ax=ax)
+im.set_clim(-1,1)
+ax.set_xlabel('time [min]')
+ax.set_ylabel('height [m]')
+ax.set_title('thvm diff new')
+plt.show()
+
+
+
+
+
+wp3_bt', 'wp3_ma', 'wp3_ta', 'wp3_tp', 'wp3_ac', 'wp3_bp1', 'wp3_bp2', 'wp3_pr1', 'wp3_pr2', 'wp3_pr3', 'wp3_dp1', 'wp3_sdmp', 'wp3_cl', 'wp3_splat'
+
+wp3=np.mean(np.array(zt.variables['wp3']),(2,3))
+wp3_bt=np.mean(np.array(zt.variables['wp3_bt']),(2,3))
+wp3_ma=np.mean(np.array(zt.variables['wp3_ma']),(2,3))
+wp3_ta=np.mean(np.array(zt.variables['wp3_ta']),(2,3))
+wp3_tp=np.mean(np.array(zt.variables['wp3_tp']),(2,3))
+wp3_ac=np.mean(np.array(zt.variables['wp3_ac']),(2,3))
+wp3_bp1=np.mean(np.array(zt.variables['wp3_bp1']),(2,3))
+wp3_bp2=np.mean(np.array(zt.variables['wp3_bp2']),(2,3))
+wp3_pr1=np.mean(np.array(zt.variables['wp3_pr1']),(2,3))
+wp3_pr2=np.mean(np.array(zt.variables['wp3_pr2']),(2,3))
+wp3_pr3=np.mean(np.array(zt.variables['wp3_pr3']),(2,3))
+wp3_dp1=np.mean(np.array(zt.variables['wp3_dp1']),(2,3))
+wp3_sdmp=np.mean(np.array(zt.variables['wp3_sdmp']),(2,3))
+wp3_cl=np.mean(np.array(zt.variables['wp3_cl']),(2,3))
+wp3_splat=np.mean(np.array(zt.variables['wp3_splat']),(2,3))
+alt=np.array(zt.variables['altitude'])
+
+plt.plot(np.mean(wp3[180:360,:],0),alt,'k',label='wp3')
+plt.plot(np.mean(wp3_bt[180:360,:]*60,0),alt,label='bt')
+plt.plot(np.mean(wp3_ma[180:360,:]*60,0),alt,label='ma')
+#plt.plot(np.mean(wp3_ta[180:360,:]*60,0),alt,label='ta')
+#plt.plot(np.mean(wp3_tp[180:360,:]*60,0),alt,label='tp')
+plt.plot(np.mean(wp3_ta[180:360,:]*60+wp3_tp[180:360,:]*60,0),alt,label='ta+tp')
+plt.plot(np.mean(wp3_ac[180:360,:]*60,0),alt,label='ac')
+plt.plot(np.mean(wp3_bp1[180:360,:]*60,0),alt,label='bp1')
+plt.plot(np.mean(wp3_bp2[180:360,:]*60,0),alt,label='bp2')
+plt.plot(np.mean(wp3_pr1[180:360,:]*60,0),alt,label='pr1')
+plt.plot(np.mean(wp3_pr2[180:360,:]*60,0),alt,label='pr2')
+plt.plot(np.mean(wp3_pr3[180:360,:]*60,0),alt,label='pr3')
+plt.plot(np.mean(wp3_dp1[180:360,:]*60,0),alt,':',label='dp1')
+plt.plot(np.mean(wp3_sdmp[180:360,:]*60,0),alt,':',label='sdmp')
+plt.plot(np.mean(wp3_cl[180:360,:]*60,0),alt,':',label='cl')
+plt.plot(np.mean(wp3_splat[180:360,:]*60,0),alt,':',label='splat')
+plt.xlabel('time [min]')
+plt.ylabel('m2/s3')
+plt.legend()
+plt.show()
+
+
+from netCDF4 import Dataset
+import numpy as np
+import matplotlib.pyplot as plt
+import scipy.stats
+
+
+zt3w=Dataset('/home/stepheba/new/wrf/WRF/test/em_quarter_ss/tests/test_params/wrfC2nu2_nock8_gamma/bomex_zt_wrf.nc')
+zt3c=Dataset('/home/stepheba/new/clubb/BAS/test_params/clbC2nu2_nock8_gamma/bomex_zt_wrf.nc')
+
+zt35w=Dataset('/home/stepheba/new/wrf/WRF/test/em_quarter_ss/wrf_cK8eq35/bomex_zt_wrf.nc')
+zt35c=Dataset('/home/stepheba/new/clubb/clb_cK8eq35/bomex_zt_wrf.nc')
+
+zt375w=Dataset('/home/stepheba/new/wrf/WRF/test/em_quarter_ss/wrf_cK8eq375/bomex_zt_wrf.nc')
+zt375c=Dataset('/home/stepheba/new/clubb/clb_cK8eq375/bomex_zt_wrf.nc')
+
+zt38w=Dataset('/home/stepheba/new/wrf/WRF/test/em_quarter_ss/wrf_cK8eq38/bomex_zt_wrf.nc')
+zt38c=Dataset('/home/stepheba/new/clubb/clb_cK8eq38/bomex_zt_wrf.nc')
+
+zt39w=Dataset('/home/stepheba/new/wrf/WRF/test/em_quarter_ss/wrf_cK8eq39/bomex_zt_wrf.nc')
+zt39c=Dataset('/home/stepheba/new/clubb/clb_cK8eq39/bomex_zt_wrf.nc')
+
+zt4w=Dataset('/home/stepheba/new/wrf/WRF/test/em_quarter_ss/wrf_cK8eq4/bomex_zt_wrf.nc')
+zt4c=Dataset('/home/stepheba/new/clubb/clb_cK8eq4/bomex_zt_wrf.nc')
+
+zt425w=Dataset('/home/stepheba/new/wrf/WRF/test/em_quarter_ss/wrf_cK8eq425/bomex_zt_wrf.nc')
+zt425c=Dataset('/home/stepheba/new/clubb/clb_cK8eq425/bomex_zt_wrf.nc')
+
+zt45w=Dataset('/home/stepheba/new/wrf/WRF/test/em_quarter_ss/wrf_cK8eq45/bomex_zt_wrf.nc')
+zt45c=Dataset('/home/stepheba/new/clubb/clb_cK8eq45/bomex_zt_wrf.nc')
+
+zt5w=Dataset('/home/stepheba/new/wrf/WRF/test/em_quarter_ss/tests/test_params/wrfC2nu2gamma/bomex_zt_wrf.nc')
+zt5c=Dataset('/home/stepheba/new/clubb/BAS/test_params/clbC2nu2gamma/bomex_zt_wrf.nc')
+
+altw=np.array(zt3w.variables['altitude'])
+altc=np.array(zt3c.variables['altitude'])
+
+wp3_3w=np.mean(np.array(zt3w.variables['wp3']),(2,3))
+wp3_3c=np.mean(np.array(zt3c.variables['wp3']),(2,3))
+
+wp3_35w=np.mean(np.array(zt35w.variables['wp3']),(2,3))
+wp3_35c=np.mean(np.array(zt35c.variables['wp3']),(2,3))
+
+wp3_4w=np.mean(np.array(zt4w.variables['wp3']),(2,3))
+wp3_4c=np.mean(np.array(zt4c.variables['wp3']),(2,3))
+
+wp3_425w=np.mean(np.array(zt425w.variables['wp3']),(2,3))
+wp3_425c=np.mean(np.array(zt425c.variables['wp3']),(2,3))
+
+wp3_45w=np.mean(np.array(zt45w.variables['wp3']),(2,3))
+wp3_45c=np.mean(np.array(zt45c.variables['wp3']),(2,3))
+
+wp3_5w=np.mean(np.array(zt5w.variables['wp3']),(2,3))
+wp3_5c=np.mean(np.array(zt5c.variables['wp3']),(2,3))
+
+
+v_3w=np.mean(np.array(zt3w.variables['vm']),(2,3))
+v_3c=np.mean(np.array(zt3c.variables['vm']),(2,3))
+
+v_35w=np.mean(np.array(zt35w.variables['vm']),(2,3))
+v_35c=np.mean(np.array(zt35c.variables['vm']),(2,3))
+
+v_4w=np.mean(np.array(zt4w.variables['vm']),(2,3))
+v_4c=np.mean(np.array(zt4c.variables['vm']),(2,3))
+
+v_425w=np.mean(np.array(zt425w.variables['vm']),(2,3))
+v_425c=np.mean(np.array(zt425c.variables['vm']),(2,3))
+
+v_45w=np.mean(np.array(zt45w.variables['vm']),(2,3))
+v_45c=np.mean(np.array(zt45c.variables['vm']),(2,3))
+
+v_5w=np.mean(np.array(zt5w.variables['vm']),(2,3))
+v_5c=np.mean(np.array(zt5c.variables['vm']),(2,3))
+
+
+plt.plot(np.mean(wp3_3w[181:360],0),altw,label='wrf,cK8 = 3.0')
+plt.plot(np.mean(wp3_3c[181:360],0),altc,label='clb,cK8 = 3.0')
+plt.plot(np.mean(wp3_35w[181:360],0),altw,label='wrf,cK8 = 3.5')
+plt.plot(np.mean(wp3_35c[181:360],0),altc,label='clb,cK8 = 3.5')
+plt.plot(np.mean(wp3_4w[181:360],0),altw,label='wrf,cK8 = 4.0')
+plt.plot(np.mean(wp3_4c[181:360],0),altc,label='clb,cK8 = 4.0')
+plt.plot(np.mean(wp3_425w[181:360],0),altw,label='wrf,cK8 = 4.25')
+plt.plot(np.mean(wp3_425c[181:360],0),altc,label='clb,cK8 = 4.25')
+plt.plot(np.mean(wp3_45w[181:360],0),altw,':',label='wrf,cK8 = 4.5')
+plt.plot(np.mean(wp3_45c[181:360],0),altc,':',label='clb,cK8 = 4.5')
+plt.plot(np.mean(wp3_5w[181:360],0),altw,':',label='wrf,cK8 = 5.0')
+plt.plot(np.mean(wp3_5c[181:360],0),altc,':',label='clb,cK8 = 5.0')
+plt.xlabel('wp3 [m3/s3]')
+plt.ylabel('height [m]')
+plt.legend()
+plt.show()
+
+
+plt.plot(np.mean(v_3w[181:360],0),altw,label='wrf,cK8 = 3.0')
+plt.plot(np.mean(v_3c[181:360],0),altc,label='clb,cK8 = 3.0')
+plt.plot(np.mean(v_35w[181:360],0),altw,label='wrf,cK8 = 3.5')
+plt.plot(np.mean(v_35c[181:360],0),altc,label='clb,cK8 = 3.5')
+plt.plot(np.mean(v_4w[181:360],0),altw,label='wrf,cK8 = 4.0')
+plt.plot(np.mean(v_4c[181:360],0),altc,label='clb,cK8 = 4.0')
+plt.plot(np.mean(v_425w[181:360],0),altw,label='wrf,cK8 = 4.25')
+plt.plot(np.mean(v_425c[181:360],0),altc,label='clb,cK8 = 4.25')
+plt.plot(np.mean(v_45w[181:360],0),altw,':',label='wrf,cK8 = 4.5')
+plt.plot(np.mean(v_45c[181:360],0),altc,':',label='clb,cK8 = 4.5')
+plt.plot(np.mean(v_5w[181:360],0),altw,':',label='wrf,cK8 = 5.0')
+plt.plot(np.mean(v_5c[181:360],0),altc,':',label='clb,cK8 = 5.0')
+plt.xlabel('vm [m/s]')
+plt.ylabel('height [m]')
+plt.legend()
+plt.show()
+
+
+
+
+
+
+zmw=Dataset('/home/stepheba/new/wrf/WRF/test/em_quarter_ss/WRF_CURR_DFLT/bomex_zm_wrf.nc')
+zmc=Dataset('/home/stepheba/new/clubb/CLB_CURR_DFLT/bomex_zm_wrf.nc')
+
+zt_old=Dataset('wrf_old/bomex_zt_wrf.nc')
+zt_new=Dataset('wrf_new/bomex_zt_wrf.nc')
+zt=Dataset('wrf_old+C1cK8/bomex_zt_wrf.nc')
+zt2=Dataset('clubb_output/bomex_zt_wrf.nc')
+
+alt=np.array(zt.variables['altitude'])
+
+wp3o=np.mean(np.array(zt_old.variables['wp3']),(2,3))
+wp3n=np.mean(np.array(zt_new.variables['wp3']),(2,3))
+wp3=np.mean(np.array(zt.variables['wp3']),(2,3))
+wp32=np.mean(np.array(zt2.variables['wp3']),(2,3))
+
+plt.plot(wp3o[180,:],alt,label='old params, t=3 hrs')
+plt.plot(wp3n[0,:],alt,label='new params, t=3 hrs (start)')
+plt.plot(wp3n[179,:],alt,label='new params, t=6 hrs')
+plt.plot(wp3[0,:],alt,label='new params (C1cK8), t=3 hrs (start)')
+plt.plot(wp3[179,:],alt,label='new params (C1cK8), t=6 hrs')
+plt.plot(wp32[0,:],alt,label='new params (C1cK8Cinv), t=3 hrs (start)')
+plt.plot(wp32[179,:],alt,label='new params (C1cK8Cinv), t=6 hrs')
+plt.xlabel('wp3 [m3/s3]')
+plt.ylabel('height [m]')
+plt.legend()
+plt.show()
+
+
+
+zt=Dataset('bomex_zt_wrf.nc')
+wp3=np.array(zt.variables['wp3'])
+alt=np.array(zt.variables['altitude'])
+wp3=np.mean(wp3,(2,3))
+plt.plot(np.mean(wp3[120:180,0:100],0),alt[0:100])
+plt.show()
+
+kazr=Dataset('/home/stepheba/data/ARM/KAZR/2016-08-30/sgpkazrge_830-831.nc')
+
+mdvc=np.array(kazr.variables['mean_doppler_velocity_copol'])
+mdvx=np.array(kazr.variables['mean_doppler_velocity_xpol'])
+refc=np.array(kazr.variables['reflectivity_copol'])
+refx=np.array(kazr.variables['reflectivity_xpol'])
+
+plt.imshow(mdvx[11692:26308,:].T,aspect=0.5,origin='lower',cmap='rainbow',extent=[time[11692],time[26308],rng[0],rng[len(rng)-1]])
+cbar=plt.colorbar()
+cbar.set_label('mean dopp. vel. x-pol. [m/s]')
+plt.xlabel('time (s since midnight 8/30 UTC)')
+plt.ylabel('height [m]')
+plt.title('raw kazr')
+plt.show()
+
+time=np.array(dls.variables['time'])
+cbh=np.array(dls.variables['dl_cbh'])
+t=np.array(dl.variables['time'])
+rng=np.array(dl.variables['range'])
+rv=np.array(dl.variables['radial_velocity'])
+
+dl=Dataset('/home/stepheba/data/ARM/DL/2016-08-30/dl_raw.nc')
+dls=Dataset('/home/stepheba/data/ARM/DL/2016-08-30/dl_stats.nc')
+
+time=np.array(dls.variables['time'])
+cbh=np.array(dls.variables['dl_cbh'])
+t=np.array(dl.variables['time'])
+rng=np.array(dl.variables['range'])
+rv=np.array(dl.variables['radial_velocity'])
+
+plt.imshow(rv[26186:58667,:].T,aspect=5,origin='lower',cmap='rainbow',extent=[t[26186],t[58667],rng[0],rng[len(rng)-1]])
+plt.plot(time[72:163],cbh[72:163])
+cbar=plt.colorbar()
+cbar.set_label('rad. vel. [m/s]')
+plt.xlabel('time (s since midnight 8/30 UTC)')
+plt.ylabel('height [m]')
+plt.title('raw lidar with CBH overlay')
+plt.show()
+
+plt.imshow(intensity.T,aspect=50,origin='lower',extent=[t[0],t[len(t)-1],rng[0],rng[len(rng)-1]])
+plt.imshow(ab.T,aspect=50,origin='lower',extent=[t[0],t[len(t)-1],rng[0],rng[len(rng)-1]])
+
+
+
+
+from netCDF4 import Dataset
+import numpy as np
+import matplotlib.pyplot as plt
+import scipy.stats
+
+t=35
+h=25
+var=np.var(w[t,h,:,:])
+sk=scipy.stats.skew(np.reshape(w[t,h,:,:],(144*144)))
+m3=sk*var**1.5
+plt.imshow(w[t,h,:,:])
+plt.colorbar()
+plt.title('var = {:4.3f}, sk = {:4.3f}, m3 = {:4.3f}'.format(var,sk,m3))
+plt.show()
+
+
+
+dx1=Dataset('bomex_zt_wrf1.nc')
+dx5=Dataset('bomex_zt_wrf5.nc')
+dx25=Dataset('bomex_zt_wrf25.nc')
+dx50=Dataset('bomex_zt_wrf50.nc')
+dx100=Dataset('bomex_zt_wrf100.nc')
+dx200=Dataset('bomex_zt_wrf200.nc')
+dx500=Dataset('bomex_zt_wrf500.nc')
+
+wp3_1=np.mean(np.array(dx1.variables['thlm']),(2,3))
+wp3_5=np.mean(np.array(dx5.variables['thlm']),(2,3))
+wp3_25=np.mean(np.array(dx25.variables['thlm']),(2,3))
+wp3_50=np.mean(np.array(dx50.variables['thlm']),(2,3))
+wp3_100=np.mean(np.array(dx100.variables['thlm']),(2,3))
+wp3_200=np.mean(np.array(dx200.variables['thlm']),(2,3))
+wp3_500=np.mean(np.array(dx500.variables['thlm']),(2,3))
+
+plt.plot(np.mean(wp3_1,0))
+plt.plot(np.mean(wp3_5,0))
+plt.plot(np.mean(wp3_25,0))
+plt.plot(np.mean(wp3_50,0))
+plt.plot(np.mean(wp3_100,0))
+plt.plot(np.mean(wp3_200,0))
+plt.plot(np.mean(wp3_500,0))
+plt.show()
+
+
+
+
+
+import matplotlib.pyplot as plt
+import numpy as np
+from netCDF4 import Dataset
+from statistics import variance
+
+outfiles='/home/stepheba/new/clubb/output/bomex_zt.nc'
+outfiles2='/home/stepheba/new/wrf/WRF/test/em_quarter_ss/clubb_output_3500/bomex_zt_wrf.nc'
+
+clb=Dataset(outfiles)
+wrf=Dataset(outfiles2)
+
+thlm=np.mean(np.array(clb.variables['thlm']),(2,3))
+thlm2=np.mean(np.array(wrf.variables['thlm']),(2,3))
+
+rtm=np.mean(np.array(clb.variables['rtm']),(2,3))
+rtm2=np.mean(np.array(wrf.variables['rtm']),(2,3))
+
+rho=np.mean(np.array(clb.variables['rho']),(2,3))
+rho2=np.mean(np.array(wrf.variables['rho']),(2,3))
+
+z=np.array(clb.variables['altitude'])
+z2=np.array(wrf.variables['altitude'])
+
+t=0
+plt.plot(rho[t,:],z,label='clubb')
+plt.plot(rho2[t,:],z2,label='wrfclubb')
+plt.title('rho, t = {}'.format(t))
+plt.xlabel('K')
+plt.ylabel('thlm')
+plt.legend()
+plt.show()
+
+t=0
+plt.plot(thlm[t,:],z,label='clubb')
+plt.plot(thlm2[t,:],z2,label='wrfclubb')
+plt.title('thlm, t = {}'.format(t))
+plt.xlabel('K')
+plt.ylabel('thlm')
+plt.legend()
+plt.show()
+
+t=0
+plt.plot(rtm[t,:],z,label='clubb')
+plt.plot(rtm2[t,:],z2,label='wrfclubb')
+plt.title('rtm, t = {}'.format(t))
+plt.xlabel('kg/kg')
+plt.ylabel('rtm')
+plt.legend()
+plt.show()
+
+plt.imshow(thlm-thlm2)
+
+zt=Dataset('bomex_zt.nc')
+rtm=np.array(zt.variables['rtm'])
+rvm=np.array(zt.variables['rvm'])
+rcm=np.array(zt.variables['rcm'])
+rim=np.array(zt.variables['rim'])
+rsm=np.array(zt.variables['rsm'])
+rgm=np.array(zt.variables['rgm'])
+
+
+
+
+
+
+
+for t in range(0,varshape[0]):
+    for x in range(0,varshape[2]):
+        for y in range(0,varshape[3]):
+            z=int(cbl[t,x,y])+1
+            while (z < varshape[1]):
+                lasw[t,z,x,y]=np.nan
+                z=z+1
+
+
+
+cldshape=lascldfra.shape
+cbl=np.zeros((cldshape[0],cldshape[2],cldshape[3]))
+for t in range(0,cldshape[0]):
+    for x in range(0,cldshape[2]):
+        for y in range(0,cldshape[3]):
+            for z in range(0,cldshape[1]):
+                if lascldfra[t,z,x,y] > 0.01:
+                    cbl[t,x,y] = z
+                    break
+
+
+##CREATING CLOUD MASKED DATA
+lcsvw2_msk01=cloud_mask(lascsvw2,cbl01)
+np.save('./npy/lcsvw2_msk01.npy',lcsvw2_msk01)
+lcsvw2_msk05=cloud_mask(lascsvw2,cbl05)
+np.save('./npy/lcsvw2_msk05.npy',lcsvw2_msk05)
+
+lcsvw2_msk10=cloud_mask(lascsvw2,cbl10)
+np.save('./npy/lcsvw2_msk10.npy',lcsvw2_msk10)
+
+lcsvw2_msk25=cloud_mask(lascsvw2,cbl25)
+np.save('./npy/lcsvw2_msk25.npy',lcsvw2_msk25)
+
+lcsvw2_msk50=cloud_mask(lascsvw2,cbl50)
+np.save('./npy/lcsvw2_msk50.npy',lcsvw2_msk50)
+
+
+
+
+t=50
+z=44
+fig=plt.figure(figsize=(15,10))
+ax1=fig.add_subplot(2,3,1)
+ax1.imshow(lcsvw_msk01[t,z,:,:])
+ax1.set_title('t={:d},z={:d},threshold 1%'.format(t,z))
+ax2=fig.add_subplot(2,3,2)
+ax2.imshow(lcsvw_msk05[t,z,:,:])
+ax2.set_title('t={:d},z={:d},threshold 5%'.format(t,z))
+ax3=fig.add_subplot(2,3,3)
+ax3.imshow(lcsvw_msk10[t,z,:,:])
+ax3.set_title('t={:d},z={:d},threshold 10%'.format(t,z))
+ax4=fig.add_subplot(2,3,4)
+ax4.imshow(lcsvw_msk25[t,z,:,:])
+ax4.set_title('t={:d},z={:d},threshold 25%'.format(t,z))
+ax5=fig.add_subplot(2,3,5)
+ax5.imshow(lcsvw_msk50[t,z,:,:])
+ax5.set_title('t={:d},z={:d},threshold 50%'.format(t,z))
+plt.show()
+
+
+t=50
+z=44
+fig=plt.figure()
+ax1=fig.add_subplot(1,2,1)
+ax1.imshow(lcsvw2_mskcbl01_trnc[t,z,:,:])
+ax1.set_title('t={:d},z={:d},threshold 1%'.format(t,z))
+ax2=fig.add_subplot(1,2,2)
+ax2.imshow(lcsvw2_mskcsvcbl01_trnc[t,z,:,:])
+ax2.set_title('t={:d},z={:d},threshold 1%'.format(t,z))
+plt.show()
+
+
+
+####CREATING 30-MIN AVERAGES
+lcsvw_msk10_30m=np.zeros((90,135,144,144))
+lcsvw2_msk10_30m=np.zeros((90,135,144,144))
+for t in range(0,90):
+    if t == 0:
+        lcsvw_msk10_30m[t,:,:,:]=np.nanmean(lcsvw_msk10[t,0:135,:,:],0)
+        lcsvw2_msk10_30m[t,:,:,:]=np.nanmean(lcsvw2_msk10[t,0:135,:,:],0)
+    if t == 1:
+        lcsvw_msk10_30m[t,:,:,:]=np.nanmean(lcsvw_msk10[t-1:t+1,0:135,:,:],0)
+        lcsvw2_msk10_30m[t,:,:,:]=np.nanmean(lcsvw2_msk10[t-1:t+1,0:135,:,:],0)
+    else:
+        lcsvw_msk10_30m[t,:,:,:]=np.nanmean(lcsvw_msk10[t-2:t+1,0:135,:,:],0)
+        lcsvw2_msk10_30m[t,:,:,:]=np.nanmean(lcsvw2_msk10[t-2:t+1,0:135,:,:],0)
+
+
+#single plot
+time=20
+top=50
+fig, ax1 = plt.subplots()
+color = 'tab:red'
+ax1.set_xlabel('w_median [m/s]',color=color)
+ax1.set_ylabel('Height [m]')
+ax1.plot(lcsvw_msk10_30m[time,0:top,72,72],lhstag[time,0:top,72,72], color=color,label='1')
+ax1.plot(w[time,0:top],dlh[0:top], color=color,linestyle='dashed',label='2')
+ax1.tick_params(axis='x', labelcolor=color)
+ax1.legend()
+ax2=ax1.twiny()
+color = 'tab:blue'
+ax2.set_xlabel('w_variance [m2 s-2]', color=color)
+ax2.plot(lcsvw2_msk10_30m[time,0:top,72,72],lhstag[time,0:top,72,72], color=color)
+ax2.plot(wvar_nan[time,0:top],dlh[0:top], color=color,linestyle='dashed')
+ax2.tick_params(axis='x', labelcolor=color)
+plt.show()
+
+
+
+
+#with subplots
+time=20
+top=50
+#fig, ax1 = plt.subplots()
+fig=plt.figure()
+ax1=fig.add_subplot(2,1,1)
+color = 'tab:red'
+ax1.set_xlabel('w_median [m/s]',color=color)
+ax1.set_ylabel('Height [m]')
+ax1.plot(lcsvw_msk10_30m[time,0:top,72,72],lhstag[time,0:top,72,72], color=color,label='1')
+ax1.plot(w[time,0:top],dlh[0:top], color=color,linestyle='dashed',label='2')
+ax1.tick_params(axis='x', labelcolor=color)
+ax1.legend()
+ax2=ax1.twiny()
+color = 'tab:blue'
+ax2.set_xlabel('w_variance [m2 s-2]', color=color)
+ax2.plot(lcsvw2_msk10_30m[time,0:top,72,72],lhstag[time,0:top,72,72], color=color)
+ax2.plot(wvar_nan[time,0:top],dlh[0:top], color=color,linestyle='dashed')
+ax2.tick_params(axis='x', labelcolor=color)
+ax1=fig.add_subplot(2,1,2)
+time=30
+color = 'tab:red'
+ax1.set_xlabel('w_median [m/s]',color=color)
+ax1.set_ylabel('Height [m]')
+ax1.plot(lcsvw_msk10_30m[time,0:top,72,72],lhstag[time,0:top,72,72], color=color,label='1')
+ax1.plot(w[time,0:top],dlh[0:top], color=color,linestyle='dashed',label='2')
+ax1.tick_params(axis='x', labelcolor=color)
+ax1.legend()
+ax2=ax1.twiny()
+color = 'tab:blue'
+ax2.set_xlabel('w_variance [m2 s-2]', color=color)
+ax2.plot(lcsvw2_msk10_30m[time,0:top,72,72],lhstag[time,0:top,72,72], color=color)
+ax2.plot(wvar_nan[time,0:top],dlh[0:top], color=color,linestyle='dashed')
+ax2.tick_params(axis='x', labelcolor=color)
+plt.show()
+
+
+
+
+time=20
+top=50
+fig, ax1 = plt.subplots()
+color = 'tab:red'
+ax1.set_xlabel('w_median [m/s]',color=color)
+ax1.set_ylabel('Height [m]')
+ax1.plot(np.nanmean(lcsvw_msk10_30m[time,0:top,:,:],(1,2)),np.mean(lhstag[time,0:top,:,:],(1,2)), color=color)
+ax1.plot(w[time,0:top],dlh[0:top], color=color,linestyle='dashed')
+ax1.tick_params(axis='x', labelcolor=color)
+ax2=ax1.twiny()
+color = 'tab:blue'
+ax2.set_xlabel('w_variance [m2 s-2]', color=color)
+ax2.plot(np.nanmean(lcsvw2_msk10_30m[time,0:top,:,:],(1,2)),np.mean(lhstag[time,0:top,:,:],(1,2)), color=color)
+ax2.plot(wvar_nan[time,0:top],dlh[0:top], color=color,linestyle='dashed')
+ax2.tick_params(axis='x', labelcolor=color)
+plt.show()
+
+
+
+
+
+
+###figure---more compact version in code/pyScripts/result.py
+
+top=60
+fig=plt.figure()
+ax1=fig.add_subplot(4,3,1)
+time=11
+ax1.plot(lcsvw2_msk10_30m[time,0:top,72,72],lhstag[time,0:top,72,72],'k--',label='LASSO')
+ax1.plot(np.nanmean(lcsvw2_msk10_30m[time,0:top,:,:],(1,2)),np.mean(lhstag[time,0:top,:,:],(1,2)),'k-.',label='LASSO hm')
+ax1.plot(wvar_nan[time,0:top],dlh[0:top],'k',label='DL')
+#ax1.set_xlabel('w_variance [m/s]')
+ax1.set_ylabel('Height [m]')
+ax1.set_title('t={:d} local time'.format(int(dlt[time]/36-500)))
+ax1.legend()
+ax2=fig.add_subplot(4,3,2)
+time=17
+ax2.plot(lcsvw2_msk10_30m[time,0:top,72,72],lhstag[time,0:top,72,72],'k--',label='LASSO')
+ax2.plot(np.nanmean(lcsvw2_msk10_30m[time,0:top,:,:],(1,2)),np.mean(lhstag[time,0:top,:,:],(1,2)),'k-.',label='LASSO hm')
+ax2.plot(wvar_nan[time,0:top],dlh[0:top],'k',label='DL')
+#ax2.set_xlabel('w_variance [m/s]')
+ax2.set_ylabel('Height [m]')
+ax2.set_title('t={:d} local time'.format(int(dlt[time]/36-500)))
+ax2.legend()
+ax3=fig.add_subplot(4,3,3)
+time=23
+ax3.plot(lcsvw2_msk10_30m[time,0:top,72,72],lhstag[time,0:top,72,72],'k--',label='LASSO')
+ax3.plot(np.nanmean(lcsvw2_msk10_30m[time,0:top,:,:],(1,2)),np.mean(lhstag[time,0:top,:,:],(1,2)),'k-.',label='LASSO hm')
+ax3.plot(wvar_nan[time,0:top],dlh[0:top],'k',label='DL')
+#ax3.set_xlabel('w_variance [m/s]')
+ax3.set_ylabel('Height [m]')
+ax3.set_title('t={:d} local time'.format(int(dlt[time]/36-500)))
+ax3.legend()
+ax4=fig.add_subplot(4,3,4)
+time=29
+ax4.plot(lcsvw2_msk10_30m[time,0:top,72,72],lhstag[time,0:top,72,72],'k--',label='LASSO')
+ax4.plot(np.nanmean(lcsvw2_msk10_30m[time,0:top,:,:],(1,2)),np.mean(lhstag[time,0:top,:,:],(1,2)),'k-.',label='LASSO hm')
+ax4.plot(wvar_nan[time,0:top],dlh[0:top],'k',label='DL')
+#ax4.set_xlabel('w_variance [m/s]')
+ax4.set_ylabel('Height [m]')
+ax4.set_title('t={:d} local time'.format(int(dlt[time]/36-500)))
+ax4.legend()
+ax5=fig.add_subplot(4,3,5)
+time=35
+ax5.plot(lcsvw2_msk10_30m[time,0:top,72,72],lhstag[time,0:top,72,72],'k--',label='LASSO')
+ax5.plot(np.nanmean(lcsvw2_msk10_30m[time,0:top,:,:],(1,2)),np.mean(lhstag[time,0:top,:,:],(1,2)),'k-.',label='LASSO hm')
+ax5.plot(wvar_nan[time,0:top],dlh[0:top],'k',label='DL')
+#ax5.set_xlabel('w_variance [m/s]')
+#ax5.set_ylabel('Height [m]')
+ax5.set_title('t={:d} local time'.format(int(dlt[time]/36-500)))
+ax5.legend()
+ax6=fig.add_subplot(4,3,6)
+time=41
+ax6.plot(lcsvw2_msk10_30m[time,0:top,72,72],lhstag[time,0:top,72,72],'k--',label='LASSO')
+ax6.plot(np.nanmean(lcsvw2_msk10_30m[time,0:top,:,:],(1,2)),np.mean(lhstag[time,0:top,:,:],(1,2)),'k-.',label='LASSO hm')
+ax6.plot(wvar_nan[time,0:top],dlh[0:top],'k',label='DL')
+#ax6.set_xlabel('w_variance [m/s]')
+#ax6.set_ylabel('Height [m]')
+ax6.set_title('t={:d} local time'.format(int(dlt[time]/36-500)))
+ax6.legend()
+ax7=fig.add_subplot(4,3,7)
+time=47
+ax7.plot(lcsvw2_msk10_30m[time,0:top,72,72],lhstag[time,0:top,72,72],'k--',label='LASSO')
+ax7.plot(np.nanmean(lcsvw2_msk10_30m[time,0:top,:,:],(1,2)),np.mean(lhstag[time,0:top,:,:],(1,2)),'k-.',label='LASSO hm')
+ax7.plot(wvar_nan[time,0:top],dlh[0:top],'k',label='DL')
+#ax7.set_xlabel('w_variance [m/s]')
+ax7.set_ylabel('Height [m]')
+ax7.set_title('t={:d} local time'.format(int(dlt[time]/36-500)))
+ax7.legend()
+ax8=fig.add_subplot(4,3,8)
+time=53
+ax8.plot(lcsvw2_msk10_30m[time,0:top,72,72],lhstag[time,0:top,72,72],'k--',label='LASSO')
+ax8.plot(np.nanmean(lcsvw2_msk10_30m[time,0:top,:,:],(1,2)),np.mean(lhstag[time,0:top,:,:],(1,2)),'k-.',label='LASSO hm')
+ax8.plot(wvar_nan[time,0:top],dlh[0:top],'k',label='DL')
+#ax8.set_xlabel('w_variance [m/s]')
+#ax8.set_ylabel('Height [m]')
+ax8.set_title('t={:d} local time'.format(int(dlt[time]/36-500)))
+ax8.legend()
+ax9=fig.add_subplot(4,3,9)
+time=59
+ax9.plot(lcsvw2_msk10_30m[time,0:top,72,72],lhstag[time,0:top,72,72],'k--',label='LASSO')
+ax9.plot(np.nanmean(lcsvw2_msk10_30m[time,0:top,:,:],(1,2)),np.mean(lhstag[time,0:top,:,:],(1,2)),'k-.',label='LASSO hm')
+ax9.plot(wvar_nan[time,0:top],dlh[0:top],'k',label='DL')
+#ax9.set_xlabel('w_variance [m/s]')
+#ax9.set_ylabel('Height [m]')
+ax9.set_title('t={:d} local time'.format(int(dlt[time]/36-500)))
+ax9.legend()
+ax9=fig.add_subplot(4,3,10)
+time=65
+ax9.plot(lcsvw2_msk10_30m[time,0:top,72,72],lhstag[time,0:top,72,72],'k--',label='LASSO')
+ax9.plot(np.nanmean(lcsvw2_msk10_30m[time,0:top,:,:],(1,2)),np.mean(lhstag[time,0:top,:,:],(1,2)),'k-.',label='LASSO hm')
+ax9.plot(wvar_nan[time,0:top],dlh[0:top],'k',label='DL')
+ax9.set_xlabel('w_variance [m/s]')
+ax9.set_ylabel('Height [m]')
+ax9.set_title('t={:d} local time'.format(int(dlt[time]/36-500)))
+ax9.legend()
+ax9=fig.add_subplot(4,3,11)
+time=71
+ax9.plot(lcsvw2_msk10_30m[time,0:top,72,72],lhstag[time,0:top,72,72],'k--',label='LASSO')
+ax9.plot(np.nanmean(lcsvw2_msk10_30m[time,0:top,:,:],(1,2)),np.mean(lhstag[time,0:top,:,:],(1,2)),'k-.',label='LASSO hm')
+ax9.plot(wvar_nan[time,0:top],dlh[0:top],'k',label='DL')
+ax9.set_xlabel('w_variance [m/s]')
+#ax9.set_ylabel('Height [m]')
+ax9.set_title('t={:d} local time'.format(int(dlt[time]/36-500)))
+ax9.legend()
+ax9=fig.add_subplot(4,3,12)
+time=77
+ax9.plot(lcsvw2_msk10_30m[time,0:top,72,72],lhstag[time,0:top,72,72],'k--',label='LASSO')
+ax9.plot(np.nanmean(lcsvw2_msk10_30m[time,0:top,:,:],(1,2)),np.mean(lhstag[time,0:top,:,:],(1,2)),'k-.',label='LASSO hm')
+ax9.plot(wvar_nan[time,0:top],dlh[0:top],'k',label='DL')
+ax9.set_xlabel('w_variance [m/s]')
+#ax9.set_ylabel('Height [m]')
+ax9.set_title('t={:d} local time'.format(int(dlt[time]/36-500)))
+ax9.legend()
+plt.tight_layout()
+plt.show()
+
+
+
+
+lascsvw2_30m=np.zeros((90,135,144,144))
+for t in range(0,90):
+    if t == 0:
+        lascsvw2_30m[t,:,:,:]=lascsvw2[t,:,:,:]
+    if t == 1:
+        lascsvw2_30m[t,:,:,:]=np.mean(lascsvw2[t-1:t+1,:,:,:],0)
+    else:
+        lascsvw2_30m[t,:,:,:]=np.mean(lascsvw2[t-2:t+1,:,:,:],0)
+
+lascsvcld_30m=np.zeros((90,135,144,144))
+for t in range(0,90):
+    if t == 0:
+        lascsvcld_30m[t,:,:,:]=lascsvcld[t,:,:,:]
+    if t == 1:
+        lascsvcld_30m[t,:,:,:]=np.mean(lascsvcld[t-1:t+1,:,:,:],0)
+    else:
+        lascsvcld_30m[t,:,:,:]=np.mean(lascsvcld[t-2:t+1,:,:,:],0)
+
+lcsvw2_30m_mskcsvcbl05_trnc=cloud_mask(lascsvw2_30m,csvcbl05_trnc)
+lcsvw2_30m_mskcsvcbl01_trnc=cloud_mask(lascsvw2_30m,csvcbl01_trnc)
+lcsvw2_30m_mskcsvcbl10_trnc=cloud_mask(lascsvw2_30m,csvcbl10_trnc)
+lcsvw2_30m_mskcsvcbl25_trnc=cloud_mask(lascsvw2_30m,csvcbl25_trnc)
+lcsvw2_30m_mskcsvcbl50_trnc=cloud_mask(lascsvw2_30m,csvcbl50_trnc)
+
+np.save('./npy/lcsvw2_30m_mskcsvcbl01_trnc.npy',lcsvw2_30m_mskcsvcbl01_trnc)
+np.save('./npy/lcsvw2_30m_mskcsvcbl05_trnc.npy',lcsvw2_30m_mskcsvcbl05_trnc)
+np.save('./npy/lcsvw2_30m_mskcsvcbl10_trnc.npy',lcsvw2_30m_mskcsvcbl10_trnc)
+np.save('./npy/lcsvw2_30m_mskcsvcbl25_trnc.npy',lcsvw2_30m_mskcsvcbl25_trnc)
+np.save('./npy/lcsvw2_30m_mskcsvcbl50_trnc.npy',lcsvw2_30m_mskcsvcbl50_trnc)
+
+
+np.save('./npy/cldmasks/csvcld_30m_cbl01_trnc.npy',csvcld_30m_cbl01_trnc)
+np.save('./npy/cldmasks/csvcld_30m_cbl05_trnc.npy',csvcld_30m_cbl05_trnc)
+np.save('./npy/cldmasks/csvcld_30m_cbl10_trnc.npy',csvcld_30m_cbl10_trnc)
+np.save('./npy/cldmasks/csvcld_30m_cbl25_trnc.npy',csvcld_30m_cbl25_trnc)
+np.save('./npy/cldmasks/csvcld_30m_cbl50_trnc.npy',csvcld_30m_cbl50_trnc)
+
+lcsvw2_30m30m_mskcsvcbl05_trnc=cloud_mask(lascsvw2_30m,csvcld_30m_cbl01_trnc)
+lcsvw2_30m30m_mskcsvcbl01_trnc=cloud_mask(lascsvw2_30m,csvcld_30m_cbl05_trnc)
+lcsvw2_30m30m_mskcsvcbl10_trnc=cloud_mask(lascsvw2_30m,csvcld_30m_cbl10_trnc)
+lcsvw2_30m30m_mskcsvcbl25_trnc=cloud_mask(lascsvw2_30m,csvcld_30m_cbl25_trnc)
+lcsvw2_30m30m_mskcsvcbl50_trnc=cloud_mask(lascsvw2_30m,csvcld_30m_cbl50_trnc)
+
+np.save('./npy/lcsvw2_30m30m_mskcsvcbl01_trnc.npy',lcsvw2_30m30m_mskcsvcbl01_trnc)
+np.save('./npy/lcsvw2_30m30m_mskcsvcbl05_trnc.npy',lcsvw2_30m30m_mskcsvcbl05_trnc)
+np.save('./npy/lcsvw2_30m30m_mskcsvcbl10_trnc.npy',lcsvw2_30m30m_mskcsvcbl10_trnc)
+np.save('./npy/lcsvw2_30m30m_mskcsvcbl25_trnc.npy',lcsvw2_30m30m_mskcsvcbl25_trnc)
+np.save('./npy/lcsvw2_30m30m_mskcsvcbl50_trnc.npy',lcsvw2_30m30m_mskcsvcbl50_trnc)
+
+
+top=60
+fig=plt.figure(figsize=(6,8))
+for i in range(0,12):
+    ax1=fig.add_subplot(4,3,i+1)
+    time=11+6*i
+    ax1.plot(lcsvw2_30m30m_mskcsvcbl10_trnc[time,0:top,72,72],lhstag[time,0:top,72,72],'k--',label='LASSO')
+    ax1.plot(np.nanmean(lcsvw2_30m30m_mskcsvcbl10_trnc[time,0:top,:,:],(1,2)),np.mean(lhstag[time,0:top,:,:],(1,2)),'k-.',label='LASSO hm')
+    ax1.plot(wvar_nan[time,0:top],dlh[0:top],'k',label='DL')
+    if i==9 or i==10 or i==11:
+        ax1.set_xlabel('w_variance [m2/s2]')
+    if i==0 or i==3 or i==6 or i==9:
+        ax1.set_ylabel('Height [m]')
+    ax1.set_title('t={:d} local time'.format(int(dlt[time]/36-500)))
+    if i==2:
+        ax1.legend()
+
+plt.tight_layout()
+plt.show()
+
+
+
+
+
+
+from netCDF4 import Dataset
+import numpy as np
+import matplotlib.pyplot as plt
+import scipy.stats
+
+true_zt=Dataset('ldiagtrue/bomex_zt_wrf.nc')
+false_zt=Dataset('ldiagfalse/bomex_zt_wrf.nc')
+true_zm=Dataset('ldiagtrue/bomex_zm_wrf.nc')
+false_zm=Dataset('ldiagfalse/bomex_zm_wrf.nc')
+
+tauztT=np.mean(np.array(true_zt.variables['tau_zt']),(2,3))
+tauztF=np.mean(np.array(false_zt.variables['tau_zt']),(2,3))
+tauzmT=np.mean(np.array(true_zm.variables['tau_zm']),(2,3))
+tauzmF=np.mean(np.array(false_zm.variables['tau_zm']),(2,3))
+
+altzm=np.array(true_zm.variables['altitude'])
+altzt=np.array(true_zt.variables['altitude'])
+
+plt.plot(np.mean(tauztF,0),altzt,label='tauztF')
+plt.plot(np.mean(tauztT,0),altzt,label='tauztT')
+plt.plot(np.mean(tauzmF,0),altzt,label='tauzmF')
+plt.plot(np.mean(tauzmT,0),altzt,label='tauzmT')
+plt.legend()
+plt.show()
+
+true_zt=Dataset('WRF_CURR_DFLT/bomex_zt_wrf.nc')
+false_zt=Dataset('./clubb_output/bomex_zt_wrf.nc')
+true_zm=Dataset('WRF_CURR_DFLT/bomex_zm_wrf.nc')
+false_zm=Dataset('./clubb_output/bomex_zm_wrf.nc')
+
+tauztT=np.mean(np.array(true_zt.variables['tau_zt']),(2,3))
+tauztF=np.mean(np.array(false_zt.variables['tau_zt']),(2,3))
+tauzmT=np.mean(np.array(true_zm.variables['tau_zm']),(2,3))
+tauzmF=np.mean(np.array(false_zm.variables['tau_zm']),(2,3))
+
+altzm=np.array(true_zm.variables['altitude'])
+altzt=np.array(true_zt.variables['altitude'])
+
+plt.plot(tauztF[300,:],altzt,label='tauztF')
+plt.plot(tauztT[300,:],altzt,label='tauztT')
+plt.plot(tauzmF[300,:],altzt,label='tauzmF')
+plt.plot(tauzmT[300,:],altzt,label='tauzmT')
+plt.legend()
+plt.show()
+
+LscaleztT=np.mean(np.array(true_zt.variables['Lscale']),(2,3))
+LscaleztF=np.mean(np.array(false_zt.variables['Lscale']),(2,3))
+
+plt.plot(LscaleztT[0,:],altzt,label='LscaleztT')
+plt.plot(LscaleztF[0,:],altzt,label='LscaleztF')
+plt.legend()
+plt.show()
+
+
+fig=plt.figure()
+ax1=fig.add_subplot(4,1,1)
+im1=ax1.imshow(LscaleztF.T,origin='lower',cmap='rainbow')
+ax1.set_title('LscaleztF')
+fig.colorbar(im1,ax=ax1)
+ax1=fig.add_subplot(4,1,2)
+im1=ax1.imshow(LscaleztT.T,origin='lower',cmap='rainbow')
+ax1.set_title('LscalezT')
+fig.colorbar(im1,ax=ax1)
+ax1=fig.add_subplot(4,1,3)
+im1=ax1.imshow(tauztF.T,origin='lower',cmap='rainbow')
+ax1.set_title('tauztF')
+fig.colorbar(im1,ax=ax1)
+ax1=fig.add_subplot(4,1,4)
+im1=ax1.imshow(tauztT.T,origin='lower',cmap='rainbow')
+ax1.set_title('tauztT')
+fig.colorbar(im1,ax=ax1)
+plt.tight_layout()
+plt.show()
+
+
+
+tau_wp2_zm=np.mean(np.array(zmT.variables['tau_wp2_zm']),(2,3))
+tau_wp3_zm=np.mean(np.array(zmT.variables['tau_wp3_zm']),(2,3))
+tau_no_N2_zm=np.mean(np.array(zmT.variables['tau_no_N2_zm']),(2,3))
+
+
+
+
+from netCDF4 import Dataset
+import numpy as np
+import matplotlib.pyplot as plt
+import scipy.stats
+
+kzr=Dataset('sgparsclkazr1_830-831.nc')
+mdv=np.array(kzr.variables['mean_doppler_velocity'])
+ref=np.array(kzr.variables['reflectivity'])
+spw=np.array(kzr.variables['spectral_width'])
+t=np.array(kzr.variables['time'])
+h=np.array(kzr.variables['height'])
+
+for i in range(0,43200):
+    for j in range(0,596):
+        if mdv[i,j]<-1000:
+            mdv[i,j]=np.nan
+
+for i in range(0,43200):
+    for j in range(0,596):
+        if ref[i,j]<-1000:
+            ref[i,j]=np.nan
+
+for i in range(0,43200):
+    for j in range(0,596):
+        if spw[i,j]<-1000:
+            spw[i,j]=np.nan
+
+t1=10800
+t2=24300
+top=500
+plt.imshow(mdv[t1:t2,0:top].T,cmap='rainbow',origin='lower',extent=[t[t1],t[t2],0,h[top]])
+cbar=plt.colorbar()
+cbar.set_label('Mean Dopp. Vel. [m/s]')
+plt.plot(t[t1:t2],cb[t1:t2],label='CBH')
+plt.xlabel('Time (sec. since midnight UTC)')
+plt.ylabel('Height [m]')
+plt.legend()
+plt.show()
+
+
+t1=10800
+t2=24300
+top=500
+plt.imshow(ref[t1:t2,0:top].T,cmap='rainbow',origin='lower',extent=[t[t1],t[t2],0,h[top]])
+cbar=plt.colorbar()
+cbar.set_label('Reflectivity [dBZ]')
+plt.plot(t[t1:t2],cb[t1:t2],label='CBH')
+plt.xlabel('Time (sec. since midnight UTC)')
+plt.ylabel('Height [m]')
+plt.legend()
+plt.show()
+
+t1=10800
+t2=24300
+top=500
+plt.imshow(spw[t1:t2,0:top].T,cmap='rainbow',origin='lower',extent=[t[t1],t[t2],0,h[top]])
+cbar=plt.colorbar()
+cbar.set_label('Spectral width [m/s]')
+plt.clim(0,1.5)
+plt.plot(t[t1:t2],cb[t1:t2],label='CBH')
+plt.xlabel('Time (sec. since midnight UTC)')
+plt.ylabel('Height [m]')
+plt.legend()
+plt.show()
+
+
