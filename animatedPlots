@@ -4,6 +4,35 @@ from netCDF4 import Dataset
 import numpy as np
 import matplotlib.pyplot as plt
 
+wrf=Dataset('/home/stepheba/new/old_wrf/WRF/test/em_quarter_ss/WRF_CURR_DFLT/bomex_zt_wrf.nc')
+wrf_05=Dataset('/home/stepheba/new/old_wrf/WRF/test/em_quarter_ss/wrf_c15eq05/bomex_zt_wrf.nc')
+wrf_1=Dataset('/home/stepheba/new/old_wrf/WRF/test/em_quarter_ss/wrf_c15eq1/bomex_zt_wrf.nc')
+wrf_15=Dataset('/home/stepheba/new/old_wrf/WRF/test/em_quarter_ss/wrf_c15eq15/bomex_zt_wrf.nc')
+wrf_3=Dataset('/home/stepheba/new/old_wrf/WRF/test/em_quarter_ss/wrf_c15eq3/bomex_zt_wrf.nc')
+wrf_5=Dataset('/home/stepheba/new/old_wrf/WRF/test/em_quarter_ss/wrf_c15eq5/bomex_zt_wrf.nc')
+wrf_1_op=Dataset('/home/stepheba/new/old_wrf/WRF/test/em_quarter_ss/wrf_c15eq1_oldp/bomex_zt_wrf.nc')
+wrf_5_op=Dataset('/home/stepheba/new/old_wrf/WRF/test/em_quarter_ss/wrf_c15eq5_oldp/bomex_zt_wrf.nc')
+wrf_p89=Dataset('/home/stepheba/new/old_wrf/WRF/test/em_quarter_ss/wrf_pre89/bomex_zt_wrf.nc')
+wrf_p89_1=Dataset('/home/stepheba/new/old_wrf/WRF/test/em_quarter_ss/wrf_pre89_c15eq1/bomex_zt_wrf.nc')
+wrf_p89_5=Dataset('/home/stepheba/new/old_wrf/WRF/test/em_quarter_ss/wrf_pre89_c15eq5/bomex_zt_wrf.nc')
+clb=Dataset('/home/stepheba/new/old_clubb/newdefault/bomex_zt_wrf.nc')
+
+wp3=np.mean(np.array(wrf.variables['wp3']),(2,3))
+wp3_05=np.mean(np.array(wrf_05.variables['wp3']),(2,3))
+wp3_1=np.mean(np.array(wrf_1.variables['wp3']),(2,3))
+wp3_15=np.mean(np.array(wrf_15.variables['wp3']),(2,3))
+wp3_3=np.mean(np.array(wrf_3.variables['wp3']),(2,3))
+wp3_5=np.mean(np.array(wrf_5.variables['wp3']),(2,3))
+wp3_1_op=np.mean(np.array(wrf_1_op.variables['wp3']),(2,3))
+wp3_5_op=np.mean(np.array(wrf_5_op.variables['wp3']),(2,3))
+wp3_pre89=np.mean(np.array(wrf_p89.variables['wp3']),(2,3))
+wp3_pre89_1=np.mean(np.array(wrf_p89_1.variables['wp3']),(2,3))
+wp3_pre89_5=np.mean(np.array(wrf_p89_5.variables['wp3']),(2,3))
+wp3_clb=np.mean(np.array(clb.variables['wp3']),(2,3))
+
+alt=np.array(wrf.variables['altitude'])
+alt_clb=np.array(clb.variables['altitude'])
+
 fig, ax = plt.subplots()
 
 for t in range(0,360):
