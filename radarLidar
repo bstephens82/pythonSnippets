@@ -1,0 +1,353 @@
+kazr=Dataset('/home/stepheba/data/ARM/KAZR/2016-08-30/sgpkazrge_830-831.nc')
+
+mdvc=np.array(kazr.variables['mean_doppler_velocity_copol'])
+mdvx=np.array(kazr.variables['mean_doppler_velocity_xpol'])
+refc=np.array(kazr.variables['reflectivity_copol'])
+refx=np.array(kazr.variables['reflectivity_xpol'])
+
+plt.imshow(mdvx[11692:26308,:].T,aspect=0.5,origin='lower',cmap='rainbow',extent=[time[11692],time[26308],rng[0],rng[len(rng)-1]])
+cbar=plt.colorbar()
+cbar.set_label('mean dopp. vel. x-pol. [m/s]')
+plt.xlabel('time (s since midnight 8/30 UTC)')
+plt.ylabel('height [m]')
+plt.title('raw kazr')
+plt.show()
+
+time=np.array(dls.variables['time'])
+cbh=np.array(dls.variables['dl_cbh'])
+t=np.array(dl.variables['time'])
+rng=np.array(dl.variables['range'])
+rv=np.array(dl.variables['radial_velocity'])
+
+dl=Dataset('/home/stepheba/data/ARM/DL/2016-08-30/dl_raw.nc')
+dls=Dataset('/home/stepheba/data/ARM/DL/2016-08-30/dl_stats.nc')
+
+time=np.array(dls.variables['time'])
+cbh=np.array(dls.variables['dl_cbh'])
+t=np.array(dl.variables['time'])
+rng=np.array(dl.variables['range'])
+rv=np.array(dl.variables['radial_velocity'])
+
+plt.imshow(rv[26186:58667,:].T,aspect=5,origin='lower',cmap='rainbow',extent=[t[26186],t[58667],rng[0],rng[len(rng)-1]])
+plt.plot(time[72:163],cbh[72:163])
+cbar=plt.colorbar()
+cbar.set_label('rad. vel. [m/s]')
+plt.xlabel('time (s since midnight 8/30 UTC)')
+plt.ylabel('height [m]')
+plt.title('raw lidar with CBH overlay')
+plt.show()
+
+plt.imshow(intensity.T,aspect=50,origin='lower',extent=[t[0],t[len(t)-1],rng[0],rng[len(rng)-1]])
+plt.imshow(ab.T,aspect=50,origin='lower',extent=[t[0],t[len(t)-1],rng[0],rng[len(rng)-1]])
+
+
+
+
+
+for t in range(0,varshape[0]):
+    for x in range(0,varshape[2]):
+        for y in range(0,varshape[3]):
+            z=int(cbl[t,x,y])+1
+            while (z < varshape[1]):
+                lasw[t,z,x,y]=np.nan
+                z=z+1
+
+
+
+cldshape=lascldfra.shape
+cbl=np.zeros((cldshape[0],cldshape[2],cldshape[3]))
+for t in range(0,cldshape[0]):
+    for x in range(0,cldshape[2]):
+        for y in range(0,cldshape[3]):
+            for z in range(0,cldshape[1]):
+                if lascldfra[t,z,x,y] > 0.01:
+                    cbl[t,x,y] = z
+                    break
+
+
+##CREATING CLOUD MASKED DATA
+lcsvw2_msk01=cloud_mask(lascsvw2,cbl01)
+np.save('./npy/lcsvw2_msk01.npy',lcsvw2_msk01)
+lcsvw2_msk05=cloud_mask(lascsvw2,cbl05)
+np.save('./npy/lcsvw2_msk05.npy',lcsvw2_msk05)
+
+lcsvw2_msk10=cloud_mask(lascsvw2,cbl10)
+np.save('./npy/lcsvw2_msk10.npy',lcsvw2_msk10)
+
+lcsvw2_msk25=cloud_mask(lascsvw2,cbl25)
+np.save('./npy/lcsvw2_msk25.npy',lcsvw2_msk25)
+
+lcsvw2_msk50=cloud_mask(lascsvw2,cbl50)
+np.save('./npy/lcsvw2_msk50.npy',lcsvw2_msk50)
+
+
+
+
+t=50
+z=44
+fig=plt.figure(figsize=(15,10))
+ax1=fig.add_subplot(2,3,1)
+ax1.imshow(lcsvw_msk01[t,z,:,:])
+ax1.set_title('t={:d},z={:d},threshold 1%'.format(t,z))
+ax2=fig.add_subplot(2,3,2)
+ax2.imshow(lcsvw_msk05[t,z,:,:])
+ax2.set_title('t={:d},z={:d},threshold 5%'.format(t,z))
+ax3=fig.add_subplot(2,3,3)
+ax3.imshow(lcsvw_msk10[t,z,:,:])
+ax3.set_title('t={:d},z={:d},threshold 10%'.format(t,z))
+ax4=fig.add_subplot(2,3,4)
+ax4.imshow(lcsvw_msk25[t,z,:,:])
+ax4.set_title('t={:d},z={:d},threshold 25%'.format(t,z))
+ax5=fig.add_subplot(2,3,5)
+ax5.imshow(lcsvw_msk50[t,z,:,:])
+ax5.set_title('t={:d},z={:d},threshold 50%'.format(t,z))
+plt.show()
+
+
+t=50
+z=44
+fig=plt.figure()
+ax1=fig.add_subplot(1,2,1)
+ax1.imshow(lcsvw2_mskcbl01_trnc[t,z,:,:])
+ax1.set_title('t={:d},z={:d},threshold 1%'.format(t,z))
+ax2=fig.add_subplot(1,2,2)
+ax2.imshow(lcsvw2_mskcsvcbl01_trnc[t,z,:,:])
+ax2.set_title('t={:d},z={:d},threshold 1%'.format(t,z))
+plt.show()
+
+
+
+####CREATING 30-MIN AVERAGES
+lcsvw_msk10_30m=np.zeros((90,135,144,144))
+lcsvw2_msk10_30m=np.zeros((90,135,144,144))
+for t in range(0,90):
+    if t == 0:
+        lcsvw_msk10_30m[t,:,:,:]=np.nanmean(lcsvw_msk10[t,0:135,:,:],0)
+        lcsvw2_msk10_30m[t,:,:,:]=np.nanmean(lcsvw2_msk10[t,0:135,:,:],0)
+    if t == 1:
+        lcsvw_msk10_30m[t,:,:,:]=np.nanmean(lcsvw_msk10[t-1:t+1,0:135,:,:],0)
+        lcsvw2_msk10_30m[t,:,:,:]=np.nanmean(lcsvw2_msk10[t-1:t+1,0:135,:,:],0)
+    else:
+        lcsvw_msk10_30m[t,:,:,:]=np.nanmean(lcsvw_msk10[t-2:t+1,0:135,:,:],0)
+        lcsvw2_msk10_30m[t,:,:,:]=np.nanmean(lcsvw2_msk10[t-2:t+1,0:135,:,:],0)
+
+
+#single plot
+time=20
+top=50
+fig, ax1 = plt.subplots()
+color = 'tab:red'
+ax1.set_xlabel('w_median [m/s]',color=color)
+ax1.set_ylabel('Height [m]')
+ax1.plot(lcsvw_msk10_30m[time,0:top,72,72],lhstag[time,0:top,72,72], color=color,label='1')
+ax1.plot(w[time,0:top],dlh[0:top], color=color,linestyle='dashed',label='2')
+ax1.tick_params(axis='x', labelcolor=color)
+ax1.legend()
+ax2=ax1.twiny()
+color = 'tab:blue'
+ax2.set_xlabel('w_variance [m2 s-2]', color=color)
+ax2.plot(lcsvw2_msk10_30m[time,0:top,72,72],lhstag[time,0:top,72,72], color=color)
+ax2.plot(wvar_nan[time,0:top],dlh[0:top], color=color,linestyle='dashed')
+ax2.tick_params(axis='x', labelcolor=color)
+plt.show()
+
+
+
+
+#with subplots
+time=20
+top=50
+#fig, ax1 = plt.subplots()
+fig=plt.figure()
+ax1=fig.add_subplot(2,1,1)
+color = 'tab:red'
+ax1.set_xlabel('w_median [m/s]',color=color)
+ax1.set_ylabel('Height [m]')
+ax1.plot(lcsvw_msk10_30m[time,0:top,72,72],lhstag[time,0:top,72,72], color=color,label='1')
+ax1.plot(w[time,0:top],dlh[0:top], color=color,linestyle='dashed',label='2')
+ax1.tick_params(axis='x', labelcolor=color)
+ax1.legend()
+ax2=ax1.twiny()
+color = 'tab:blue'
+ax2.set_xlabel('w_variance [m2 s-2]', color=color)
+ax2.plot(lcsvw2_msk10_30m[time,0:top,72,72],lhstag[time,0:top,72,72], color=color)
+ax2.plot(wvar_nan[time,0:top],dlh[0:top], color=color,linestyle='dashed')
+ax2.tick_params(axis='x', labelcolor=color)
+ax1=fig.add_subplot(2,1,2)
+time=30
+color = 'tab:red'
+ax1.set_xlabel('w_median [m/s]',color=color)
+ax1.set_ylabel('Height [m]')
+ax1.plot(lcsvw_msk10_30m[time,0:top,72,72],lhstag[time,0:top,72,72], color=color,label='1')
+ax1.plot(w[time,0:top],dlh[0:top], color=color,linestyle='dashed',label='2')
+ax1.tick_params(axis='x', labelcolor=color)
+ax1.legend()
+ax2=ax1.twiny()
+color = 'tab:blue'
+ax2.set_xlabel('w_variance [m2 s-2]', color=color)
+ax2.plot(lcsvw2_msk10_30m[time,0:top,72,72],lhstag[time,0:top,72,72], color=color)
+ax2.plot(wvar_nan[time,0:top],dlh[0:top], color=color,linestyle='dashed')
+ax2.tick_params(axis='x', labelcolor=color)
+plt.show()
+
+
+
+
+time=20
+top=50
+fig, ax1 = plt.subplots()
+color = 'tab:red'
+ax1.set_xlabel('w_median [m/s]',color=color)
+ax1.set_ylabel('Height [m]')
+ax1.plot(np.nanmean(lcsvw_msk10_30m[time,0:top,:,:],(1,2)),np.mean(lhstag[time,0:top,:,:],(1,2)), color=color)
+ax1.plot(w[time,0:top],dlh[0:top], color=color,linestyle='dashed')
+ax1.tick_params(axis='x', labelcolor=color)
+ax2=ax1.twiny()
+color = 'tab:blue'
+ax2.set_xlabel('w_variance [m2 s-2]', color=color)
+ax2.plot(np.nanmean(lcsvw2_msk10_30m[time,0:top,:,:],(1,2)),np.mean(lhstag[time,0:top,:,:],(1,2)), color=color)
+ax2.plot(wvar_nan[time,0:top],dlh[0:top], color=color,linestyle='dashed')
+ax2.tick_params(axis='x', labelcolor=color)
+plt.show()
+
+
+
+
+lascsvw2_30m=np.zeros((90,135,144,144))
+for t in range(0,90):
+    if t == 0:
+        lascsvw2_30m[t,:,:,:]=lascsvw2[t,:,:,:]
+    if t == 1:
+        lascsvw2_30m[t,:,:,:]=np.mean(lascsvw2[t-1:t+1,:,:,:],0)
+    else:
+        lascsvw2_30m[t,:,:,:]=np.mean(lascsvw2[t-2:t+1,:,:,:],0)
+
+lascsvcld_30m=np.zeros((90,135,144,144))
+for t in range(0,90):
+    if t == 0:
+        lascsvcld_30m[t,:,:,:]=lascsvcld[t,:,:,:]
+    if t == 1:
+        lascsvcld_30m[t,:,:,:]=np.mean(lascsvcld[t-1:t+1,:,:,:],0)
+    else:
+        lascsvcld_30m[t,:,:,:]=np.mean(lascsvcld[t-2:t+1,:,:,:],0)
+
+lcsvw2_30m_mskcsvcbl05_trnc=cloud_mask(lascsvw2_30m,csvcbl05_trnc)
+lcsvw2_30m_mskcsvcbl01_trnc=cloud_mask(lascsvw2_30m,csvcbl01_trnc)
+lcsvw2_30m_mskcsvcbl10_trnc=cloud_mask(lascsvw2_30m,csvcbl10_trnc)
+lcsvw2_30m_mskcsvcbl25_trnc=cloud_mask(lascsvw2_30m,csvcbl25_trnc)
+lcsvw2_30m_mskcsvcbl50_trnc=cloud_mask(lascsvw2_30m,csvcbl50_trnc)
+
+np.save('./npy/lcsvw2_30m_mskcsvcbl01_trnc.npy',lcsvw2_30m_mskcsvcbl01_trnc)
+np.save('./npy/lcsvw2_30m_mskcsvcbl05_trnc.npy',lcsvw2_30m_mskcsvcbl05_trnc)
+np.save('./npy/lcsvw2_30m_mskcsvcbl10_trnc.npy',lcsvw2_30m_mskcsvcbl10_trnc)
+np.save('./npy/lcsvw2_30m_mskcsvcbl25_trnc.npy',lcsvw2_30m_mskcsvcbl25_trnc)
+np.save('./npy/lcsvw2_30m_mskcsvcbl50_trnc.npy',lcsvw2_30m_mskcsvcbl50_trnc)
+
+
+np.save('./npy/cldmasks/csvcld_30m_cbl01_trnc.npy',csvcld_30m_cbl01_trnc)
+np.save('./npy/cldmasks/csvcld_30m_cbl05_trnc.npy',csvcld_30m_cbl05_trnc)
+np.save('./npy/cldmasks/csvcld_30m_cbl10_trnc.npy',csvcld_30m_cbl10_trnc)
+np.save('./npy/cldmasks/csvcld_30m_cbl25_trnc.npy',csvcld_30m_cbl25_trnc)
+np.save('./npy/cldmasks/csvcld_30m_cbl50_trnc.npy',csvcld_30m_cbl50_trnc)
+
+lcsvw2_30m30m_mskcsvcbl05_trnc=cloud_mask(lascsvw2_30m,csvcld_30m_cbl01_trnc)
+lcsvw2_30m30m_mskcsvcbl01_trnc=cloud_mask(lascsvw2_30m,csvcld_30m_cbl05_trnc)
+lcsvw2_30m30m_mskcsvcbl10_trnc=cloud_mask(lascsvw2_30m,csvcld_30m_cbl10_trnc)
+lcsvw2_30m30m_mskcsvcbl25_trnc=cloud_mask(lascsvw2_30m,csvcld_30m_cbl25_trnc)
+lcsvw2_30m30m_mskcsvcbl50_trnc=cloud_mask(lascsvw2_30m,csvcld_30m_cbl50_trnc)
+
+np.save('./npy/lcsvw2_30m30m_mskcsvcbl01_trnc.npy',lcsvw2_30m30m_mskcsvcbl01_trnc)
+np.save('./npy/lcsvw2_30m30m_mskcsvcbl05_trnc.npy',lcsvw2_30m30m_mskcsvcbl05_trnc)
+np.save('./npy/lcsvw2_30m30m_mskcsvcbl10_trnc.npy',lcsvw2_30m30m_mskcsvcbl10_trnc)
+np.save('./npy/lcsvw2_30m30m_mskcsvcbl25_trnc.npy',lcsvw2_30m30m_mskcsvcbl25_trnc)
+np.save('./npy/lcsvw2_30m30m_mskcsvcbl50_trnc.npy',lcsvw2_30m30m_mskcsvcbl50_trnc)
+
+
+top=60
+fig=plt.figure(figsize=(6,8))
+for i in range(0,12):
+    ax1=fig.add_subplot(4,3,i+1)
+    time=11+6*i
+    ax1.plot(lcsvw2_30m30m_mskcsvcbl10_trnc[time,0:top,72,72],lhstag[time,0:top,72,72],'k--',label='LASSO')
+    ax1.plot(np.nanmean(lcsvw2_30m30m_mskcsvcbl10_trnc[time,0:top,:,:],(1,2)),np.mean(lhstag[time,0:top,:,:],(1,2)),'k-.',label='LASSO hm')
+    ax1.plot(wvar_nan[time,0:top],dlh[0:top],'k',label='DL')
+    if i==9 or i==10 or i==11:
+        ax1.set_xlabel('w_variance [m2/s2]')
+    if i==0 or i==3 or i==6 or i==9:
+        ax1.set_ylabel('Height [m]')
+    ax1.set_title('t={:d} local time'.format(int(dlt[time]/36-500)))
+    if i==2:
+        ax1.legend()
+
+plt.tight_layout()
+plt.show()
+
+
+
+
+
+
+from netCDF4 import Dataset
+import numpy as np
+import matplotlib.pyplot as plt
+import scipy.stats
+
+kzr=Dataset('sgparsclkazr1_830-831.nc')
+mdv=np.array(kzr.variables['mean_doppler_velocity'])
+ref=np.array(kzr.variables['reflectivity'])
+spw=np.array(kzr.variables['spectral_width'])
+t=np.array(kzr.variables['time'])
+h=np.array(kzr.variables['height'])
+
+for i in range(0,43200):
+    for j in range(0,596):
+        if mdv[i,j]<-1000:
+            mdv[i,j]=np.nan
+
+for i in range(0,43200):
+    for j in range(0,596):
+        if ref[i,j]<-1000:
+            ref[i,j]=np.nan
+
+for i in range(0,43200):
+    for j in range(0,596):
+        if spw[i,j]<-1000:
+            spw[i,j]=np.nan
+
+t1=10800
+t2=24300
+top=500
+plt.imshow(mdv[t1:t2,0:top].T,cmap='rainbow',origin='lower',extent=[t[t1],t[t2],0,h[top]])
+cbar=plt.colorbar()
+cbar.set_label('Mean Dopp. Vel. [m/s]')
+plt.plot(t[t1:t2],cb[t1:t2],label='CBH')
+plt.xlabel('Time (sec. since midnight UTC)')
+plt.ylabel('Height [m]')
+plt.legend()
+plt.show()
+
+
+t1=10800
+t2=24300
+top=500
+plt.imshow(ref[t1:t2,0:top].T,cmap='rainbow',origin='lower',extent=[t[t1],t[t2],0,h[top]])
+cbar=plt.colorbar()
+cbar.set_label('Reflectivity [dBZ]')
+plt.plot(t[t1:t2],cb[t1:t2],label='CBH')
+plt.xlabel('Time (sec. since midnight UTC)')
+plt.ylabel('Height [m]')
+plt.legend()
+plt.show()
+
+t1=10800
+t2=24300
+top=500
+plt.imshow(spw[t1:t2,0:top].T,cmap='rainbow',origin='lower',extent=[t[t1],t[t2],0,h[top]])
+cbar=plt.colorbar()
+cbar.set_label('Spectral width [m/s]')
+plt.clim(0,1.5)
+plt.plot(t[t1:t2],cb[t1:t2],label='CBH')
+plt.xlabel('Time (sec. since midnight UTC)')
+plt.ylabel('Height [m]')
+plt.legend()
+plt.show()
