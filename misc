@@ -4,6 +4,7 @@ from netCDF4 import Dataset
 import numpy as np
 import matplotlib.pyplot as plt
 
+wrf=Dataset('/home/stepheba/new/old_wrf/WRF/test/em_quarter_ss/WRF_CURR_DFLT/wrfout.nc')
 wrfzt=Dataset('/home/stepheba/new/old_wrf/WRF/test/em_quarter_ss/WRF_CURR_DFLT/bomex_zt_wrf.nc')
 wrfzm=Dataset('/home/stepheba/new/old_wrf/WRF/test/em_quarter_ss/WRF_CURR_DFLT/bomex_zm_wrf.nc')
 wrfsfc=Dataset('/home/stepheba/new/old_wrf/WRF/test/em_quarter_ss/WRF_CURR_DFLT/bomex_sfc_wrf.nc')
