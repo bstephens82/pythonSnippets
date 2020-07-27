@@ -17,6 +17,8 @@ wrf_p89_1=Dataset('/home/stepheba/new/old_wrf/WRF/test/em_quarter_ss/wrf_pre89_c
 wrf_p89_5=Dataset('/home/stepheba/new/old_wrf/WRF/test/em_quarter_ss/wrf_pre89_c15eq5/bomex_zt_wrf.nc')
 clb=Dataset('/home/stepheba/new/old_clubb/newdefault/bomex_zt_wrf.nc')
 
+wrf_p89_test=Dataset('/home/stepheba/new/old_wrf/WRF/test/em_quarter_ss/clubb_output/bomex_zt_wrf.nc')
+
 wp3=np.mean(np.array(wrf.variables['wp3']),(2,3))
 wp3_05=np.mean(np.array(wrf_05.variables['wp3']),(2,3))
 wp3_1=np.mean(np.array(wrf_1.variables['wp3']),(2,3))
