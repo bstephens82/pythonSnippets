@@ -4,6 +4,16 @@ from netCDF4 import Dataset
 import numpy as np
 import matplotlib.pyplot as plt
 
+#newer
+wrf=Dataset('/home/stepheba/new/wrf/WRF/test/em_quarter_ss/wrf_ncor_nw_nq_clbsfc_clbrad_dry_npr_clbht/wrfout.nc')
+wrfzt=Dataset('/home/stepheba/new/wrf/WRF/test/em_quarter_ss/wrf_ncor_nw_nq_clbsfc_clbrad_dry_npr_clbht/bomex_zt_wrf.nc')
+wrfzm=Dataset('/home/stepheba/new/wrf/WRF/test/em_quarter_ss/wrf_ncor_nw_nq_clbsfc_clbrad_dry_npr_clbht/bomex_zm_wrf.nc')
+wrfsfc=Dataset('/home/stepheba/new/wrf/WRF/test/em_quarter_ss/wrf_ncor_nw_nq_clbsfc_clbrad_dry_npr_clbht/bomex_sfc_wrf.nc')
+clbzt=Dataset('/home/stepheba/new/clubb/clb_ncor_nw_nq_wgrd_npr/bomex_zt_wrf.nc')
+clbzm=Dataset('/home/stepheba/new/clubb/clb_ncor_nw_nq_wgrd_npr/bomex_zm_wrf.nc')
+clbsfc=Dataset('/home/stepheba/new/clubb/clb_ncor_nw_nq_wgrd_npr/bomex_sfc_wrf.nc')
+
+#older
 wrf=Dataset('/home/stepheba/new/old_wrf/WRF/test/em_quarter_ss/WRF_CURR_DFLT/wrfout.nc')
 wrfzt=Dataset('/home/stepheba/new/old_wrf/WRF/test/em_quarter_ss/WRF_CURR_DFLT/bomex_zt_wrf.nc')
 wrfzm=Dataset('/home/stepheba/new/old_wrf/WRF/test/em_quarter_ss/WRF_CURR_DFLT/bomex_zm_wrf.nc')
