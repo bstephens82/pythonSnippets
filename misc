@@ -205,3 +205,65 @@ plt.legend()
 plt.show()
 
 
+
+
+from netCDF4 import Dataset
+import numpy as np
+import matplotlib.pyplot as plt
+
+wrf=Dataset('wrfout.nc')
+
+tben=np.mean(np.array(wrf.variables['T_BEN']),(2,3))
+rthben=np.mean(np.array(wrf.variables['RTHBLTEN_BEN']),(2,3))
+
+diffs_th=np.zeros((360,75))
+for i in range(1,359):
+    diffs_th[i,:]=rthten[i,:]*60-(tbenb[i+1,:]-tbenb[i,:])
+
+plt.imshow(diffs_th.T,origin='lower')
+plt.colorbar()
+plt.show()
+
+
+tbena=np.zeros((360,75))
+qbena=np.zeros((360,75))
+ubena=np.zeros((360,75))
+vbena=np.zeros((360,75))
+tbenb=np.zeros((360,75))
+qbenb=np.zeros((360,75))
+ubenb=np.zeros((360,75))
+vbenb=np.zeros((360,75))
+rthten=np.zeros((360,75))
+
+for i in range(1,361):
+    file="./tbenfiles/thlma{}.txt".format(i)
+    temp=np.loadtxt(file)
+    for j in range(0,75):
+        tbena[i-1,j]=temp[j,0]
+        qbena[i-1,j]=temp[j,1]
+        ubena[i-1,j]=temp[j,2]
+        vbena[i-1,j]=temp[j,3]
+
+for i in range(1,361):
+    file="./tbenfiles/thlmb{}.txt".format(i)
+    temp=np.loadtxt(file)
+    for j in range(0,75):
+        tbenb[i-1,j]=temp[j,0]
+        qbenb[i-1,j]=temp[j,1]
+        ubenb[i-1,j]=temp[j,2]
+        vbenb[i-1,j]=temp[j,3]
+
+
+for i in range(1,361):
+    file="./tbenfiles/tbenb{}.txt".format(i)
+    temp=np.loadtxt(file)
+    for j in range(0,75):
+        tbenb[i-1,j]=temp[j]
+
+for i in range(1,361):
+    file="./tbenfiles/rthben{}.txt".format(i)
+    temp=np.loadtxt(file)
+    for j in range(0,75):
+        rthten[i-1,j]=temp[j]
+
+
