@@ -1,29 +1,13 @@
 
 
+#religion
 from netCDF4 import Dataset
 import numpy as np
 import matplotlib.pyplot as plt
 
-#newer
-wrf=Dataset('/home/stepheba/new/wrf/WRF/test/em_quarter_ss/wrf_ncor_nw_nq_clbsfc_clbrad_dry_npr_clbht/wrfout.nc')
-wrfzt=Dataset('/home/stepheba/new/wrf/WRF/test/em_quarter_ss/wrf_ncor_nw_nq_clbsfc_clbrad_dry_npr_clbht/bomex_zt_wrf.nc')
-wrfzm=Dataset('/home/stepheba/new/wrf/WRF/test/em_quarter_ss/wrf_ncor_nw_nq_clbsfc_clbrad_dry_npr_clbht/bomex_zm_wrf.nc')
-wrfsfc=Dataset('/home/stepheba/new/wrf/WRF/test/em_quarter_ss/wrf_ncor_nw_nq_clbsfc_clbrad_dry_npr_clbht/bomex_sfc_wrf.nc')
-clbzt=Dataset('/home/stepheba/new/clubb/clb_ncor_nw_nq_wgrd_npr/bomex_zt_wrf.nc')
-clbzm=Dataset('/home/stepheba/new/clubb/clb_ncor_nw_nq_wgrd_npr/bomex_zm_wrf.nc')
-clbsfc=Dataset('/home/stepheba/new/clubb/clb_ncor_nw_nq_wgrd_npr/bomex_sfc_wrf.nc')
+####extracting some WRF variables:
 
-#older
-wrf=Dataset('/home/stepheba/new/old_wrf/WRF/test/em_quarter_ss/WRF_CURR_DFLT/wrfout.nc')
-wrfzt=Dataset('/home/stepheba/new/old_wrf/WRF/test/em_quarter_ss/WRF_CURR_DFLT/bomex_zt_wrf.nc')
-wrfzm=Dataset('/home/stepheba/new/old_wrf/WRF/test/em_quarter_ss/WRF_CURR_DFLT/bomex_zm_wrf.nc')
-wrfsfc=Dataset('/home/stepheba/new/old_wrf/WRF/test/em_quarter_ss/WRF_CURR_DFLT/bomex_sfc_wrf.nc')
-clbzt=Dataset('/home/stepheba/new/old_clubb/newdefault/bomex_zt_wrf.nc')
-clbzm=Dataset('/home/stepheba/new/old_clubb/newdefault/bomex_zm_wrf.nc')
-clbsfc=Dataset('/home/stepheba/new/old_clubb/newdefault/bomex_sfc_wrf.nc')
-
-
-#extracting WRF height
+####WRF height
 ph=np.array(wrf.variables['PH'])
 phb=np.array(wrf.variables['PHB'])
 htstag=(ph+phb)/9.81
@@ -31,6 +15,15 @@ htshp=htstag.shape
 ht=np.zeros((htshp[0],htshp[1],htshp[2],htshp[3]))
 for i in range(0,htshp[1]-1):
         ht[:,i,:,:]=0.5*(htstag[:,i,:,:]+htstag[:,i+1,:,:])
+        
+####WRF density---set p0 (pascals)!!
+p=np.array(wrf.variables['P'])
+pb=np.array(wrf.variables['PB'])
+p=p+pb
+t=np.array(wrf.variables['T'])+300
+p0=100000
+tk=t*(p/p0)**0.286
+rho=p/(tk*287)
         
 #extracting tendencies and unweighting
 mu=np.array(wrf.variables['MU'])
@@ -40,6 +33,16 @@ rthblten=np.mean(np.array(wrf.variables['RTHBLTEN']),(2,3))/mu[1,1,1]
 rqvblten=np.mean(np.array(wrf.variables['RQVBLTEN']),(2,3))/mu[1,1,1]
 rublten=np.mean(np.array(wrf.variables['RUBLTEN']),(2,3))/mu[1,1,1]
 rvblten=np.mean(np.array(wrf.variables['RVBLTEN']),(2,3))/mu[1,1,1]
+
+
+
+
+
+
+
+
+
+
 
 th=np.mean(np.array(wrf.variables['T']),(2,3))+300
 qv=np.mean(np.array(wrf.variables['QVAPOR']),(2,3))
