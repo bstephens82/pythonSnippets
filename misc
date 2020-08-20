@@ -5,6 +5,16 @@ from netCDF4 import Dataset
 import numpy as np
 import matplotlib.pyplot as plt
 
+sam=Dataset('BOMEX_4x1x80_16km_CLUBB.nc')
+sam2=Dataset('../../sam_clubb0/OUT_STAT/BOMEX_4x1x80_16km_CLUBB.nc')
+
+wp3=np.mean(np.array(sam.variables['WP3_SGS']),(2,3))
+wp32=np.mean(np.array(sam2.variables['WP3_SGS']),(2,3))
+
+plt.plot(np.mean(wp3,0))
+plt.plot(np.mean(wp32,0))
+plt.show()
+
 ####extracting some WRF variables:
 
 ####WRF height
