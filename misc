@@ -10,9 +10,10 @@ sam2=Dataset('../../sam_clubb0/OUT_STAT/BOMEX_4x1x80_16km_CLUBB.nc')
 
 wp3=np.mean(np.array(sam.variables['WP3_SGS']),(2,3))
 wp32=np.mean(np.array(sam2.variables['WP3_SGS']),(2,3))
+z=np.array(sam.variables['z'])
 
-plt.plot(np.mean(wp3,0))
-plt.plot(np.mean(wp32,0))
+plt.plot(np.mean(wp3,0),z)
+plt.plot(np.mean(wp32,0),z)
 plt.show()
 
 ####extracting some WRF variables:
