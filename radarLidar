@@ -5,6 +5,9 @@ mdvx=np.array(kazr.variables['mean_doppler_velocity_xpol'])
 refc=np.array(kazr.variables['reflectivity_copol'])
 refx=np.array(kazr.variables['reflectivity_xpol'])
 
+rng=np.array(kazr.variables['range'])
+time=np.array(kazr.variables['time'])
+
 plt.imshow(mdvx[11692:26308,:].T,aspect=0.5,origin='lower',cmap='rainbow',extent=[time[11692],time[26308],rng[0],rng[len(rng)-1]])
 cbar=plt.colorbar()
 cbar.set_label('mean dopp. vel. x-pol. [m/s]')
@@ -292,13 +295,15 @@ import numpy as np
 import matplotlib.pyplot as plt
 import scipy.stats
 
-kzr=Dataset('sgparsclkazr1_830-831.nc')
-mdv=np.array(kzr.variables['mean_doppler_velocity'])
-ref=np.array(kzr.variables['reflectivity'])
-spw=np.array(kzr.variables['spectral_width'])
-t=np.array(kzr.variables['time'])
-h=np.array(kzr.variables['height'])
+kazr=Dataset('/home/stepheba/data/ARM/KAZR/2016-08-30/sgparsclkazr1_830-831.nc')
+mdv=np.array(kazr.variables['mean_doppler_velocity'])
+ref=np.array(kazr.variables['reflectivity'])
+spw=np.array(kazr.variables['spectral_width'])
+t=np.array(kazr.variables['time'])
+h=np.array(kazr.variables['height'])
+cb=np.array(kazr.variables['cloud_base_best_estimate'])
 
+#these take a bit to process
 for i in range(0,43200):
     for j in range(0,596):
         if mdv[i,j]<-1000:
