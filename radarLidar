@@ -1,3 +1,43 @@
+
+import numpy as np
+from netCDF4 import Dataset
+import matplotlib.pyplot as plt
+from result_fnx import filter_missing
+
+
+f=Dataset('/home/stepheba/data/lidardata/wstats.nc')
+wsk=np.array(f.variables['w_skewness'])
+h=np.array(f.variables['height'])
+snr=np.array(f.variables['snr'])
+noise=np.array(f.variables['noise'])
+
+wskf=filter_missing(wsk)
+
+for t in range(0,len(wsk)):
+    for z in range(0,133):
+        if snr[t,z] < 0.008 or noise[t,z] > 1.00:
+            wsk[t,z]=np.nan
+
+plt.imshow(wsk.T,origin='lower',cmap='rainbow',extent=[0,time[-1]/60,0,h[-1]],aspect=50)
+plt.colorbar()
+plt.clim(-1,1)
+plt.xlabel('Time [min]')
+plt.ylabel('Height [m]')
+plt.title('w_skewness Lidar data, assorted days 2017-2018')
+plt.show()
+
+fig, ax = plt.subplots()
+
+for t in range(0,len(wskf)):
+    ax.cla()
+    ax.plot(wskf[t,:],h)
+    ax.set_xlim(-2,2)
+    plt.pause(0.05)
+
+
+
+
+
 kazr=Dataset('/home/stepheba/data/ARM/KAZR/2016-08-30/sgpkazrge_830-831.nc')
 
 mdvc=np.array(kazr.variables['mean_doppler_velocity_copol'])
