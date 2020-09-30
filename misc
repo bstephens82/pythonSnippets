@@ -48,13 +48,6 @@ rvblten=np.mean(np.array(wrf.variables['RVBLTEN']),(2,3))/mu[1,1,1]
 
 
 
-
-
-
-
-
-
-
 th=np.mean(np.array(wrf.variables['T']),(2,3))+300
 qv=np.mean(np.array(wrf.variables['QVAPOR']),(2,3))
 u=np.mean(np.array(wrf.variables['U']),(2,3))
@@ -69,33 +62,6 @@ for i in range(1,360):
     diffs_qv[i,:]=rqvblten[i,:]*60-(qv[i,:]-qv[i-1,:])
     diffs_u[i,:]=rublten[i,:]*60-(u[i,:]-u[i-1,:])
     diffs_v[i,:]=rvblten[i,:]*60-(v[i,:]-v[i-1,:])
-
-
-plt.plot(np.mean(wp3_dp1_3c[181:360],0),altc,label='clb,cK8 = 3.0')
-plt.plot(np.mean(wp3_dp1_35c[181:360],0),altc,label='clb,cK8 = 3.5')
-plt.plot(np.mean(wp3_dp1_375c[181:360],0),altc,label='clb,cK8 = 3.75')
-plt.plot(np.mean(wp3_dp1_38c[181:360],0),altc,label='clb,cK8 = 3.8')
-plt.plot(np.mean(wp3_dp1_39c[181:360],0),altc,label='clb,cK8 = 3.9')
-plt.plot(np.mean(wp3_dp1_4c[181:360],0),altc,label='clb,cK8 = 4.0')
-plt.plot(np.mean(wp3_dp1_425c[181:360],0),altc,label='clb,cK8 = 4.25')
-plt.plot(np.mean(wp3_dp1_45c[181:360],0),altc,label='clb,cK8 = 4.5')
-plt.plot(np.mean(wp3_dp1_5c[181:360],0),altc,label='clb,cK8 = 5.0')
-plt.plot(np.mean(wp3_dp1_3w[181:360],0),altw,':',label='wrf,cK8 = 3.0')
-plt.plot(np.mean(wp3_dp1_35w[181:360],0),altw,':',label='wrf,cK8 = 3.5')
-plt.plot(np.mean(wp3_dp1_375w[181:360],0),altw,':',label='wrf,cK8 = 3.75')
-plt.plot(np.mean(wp3_dp1_38w[181:360],0),altw,':',label='wrf,cK8 = 3.8')
-plt.plot(np.mean(wp3_dp1_39w[181:360],0),altw,':',label='wrf,cK8 = 3.9')
-plt.plot(np.mean(wp3_dp1_4w[181:360],0),altw,':',label='wrf,cK8 = 4.0')
-plt.plot(np.mean(wp3_dp1_425w[181:360],0),altw,':',label='wrf,cK8 = 4.25')
-plt.plot(np.mean(wp3_dp1_45w[181:360],0),altw,':',label='wrf,cK8 = 4.5')
-plt.plot(np.mean(wp3_dp1_5w[181:360],0),altw,':',label='wrf,cK8 = 5.0')
-plt.xlabel('wp3_dp1 [m/s]')
-plt.ylabel('height [m]')
-plt.legend()
-plt.show()
-
-
-
 
 
 
@@ -178,46 +144,6 @@ ax.set_title('vpwp')
 ax.legend()
 fig.suptitle('height = {}'.format(alt[level]))
 plt.show()
-
-
-wp3=np.mean(np.array(zt.variables['wp3']),(2,3))
-wp3_bt=np.mean(np.array(zt.variables['wp3_bt']),(2,3))
-wp3_ma=np.mean(np.array(zt.variables['wp3_ma']),(2,3))
-wp3_ta=np.mean(np.array(zt.variables['wp3_ta']),(2,3))
-wp3_tp=np.mean(np.array(zt.variables['wp3_tp']),(2,3))
-wp3_ac=np.mean(np.array(zt.variables['wp3_ac']),(2,3))
-wp3_bp1=np.mean(np.array(zt.variables['wp3_bp1']),(2,3))
-wp3_bp2=np.mean(np.array(zt.variables['wp3_bp2']),(2,3))
-wp3_pr1=np.mean(np.array(zt.variables['wp3_pr1']),(2,3))
-wp3_pr2=np.mean(np.array(zt.variables['wp3_pr2']),(2,3))
-wp3_pr3=np.mean(np.array(zt.variables['wp3_pr3']),(2,3))
-wp3_dp1=np.mean(np.array(zt.variables['wp3_dp1']),(2,3))
-wp3_sdmp=np.mean(np.array(zt.variables['wp3_sdmp']),(2,3))
-wp3_cl=np.mean(np.array(zt.variables['wp3_cl']),(2,3))
-wp3_splat=np.mean(np.array(zt.variables['wp3_splat']),(2,3))
-alt=np.array(zt.variables['altitude'])
-
-plt.plot(np.mean(wp3[180:360,:],0),alt,'k',label='wp3')
-plt.plot(np.mean(wp3_bt[180:360,:]*60,0),alt,label='bt')
-plt.plot(np.mean(wp3_ma[180:360,:]*60,0),alt,label='ma')
-#plt.plot(np.mean(wp3_ta[180:360,:]*60,0),alt,label='ta')
-#plt.plot(np.mean(wp3_tp[180:360,:]*60,0),alt,label='tp')
-plt.plot(np.mean(wp3_ta[180:360,:]*60+wp3_tp[180:360,:]*60,0),alt,label='ta+tp')
-plt.plot(np.mean(wp3_ac[180:360,:]*60,0),alt,label='ac')
-plt.plot(np.mean(wp3_bp1[180:360,:]*60,0),alt,label='bp1')
-plt.plot(np.mean(wp3_bp2[180:360,:]*60,0),alt,label='bp2')
-plt.plot(np.mean(wp3_pr1[180:360,:]*60,0),alt,label='pr1')
-plt.plot(np.mean(wp3_pr2[180:360,:]*60,0),alt,label='pr2')
-plt.plot(np.mean(wp3_pr3[180:360,:]*60,0),alt,label='pr3')
-plt.plot(np.mean(wp3_dp1[180:360,:]*60,0),alt,':',label='dp1')
-plt.plot(np.mean(wp3_sdmp[180:360,:]*60,0),alt,':',label='sdmp')
-plt.plot(np.mean(wp3_cl[180:360,:]*60,0),alt,':',label='cl')
-plt.plot(np.mean(wp3_splat[180:360,:]*60,0),alt,':',label='splat')
-plt.xlabel('time [min]')
-plt.ylabel('m2/s3')
-plt.legend()
-plt.show()
-
 
 
 
