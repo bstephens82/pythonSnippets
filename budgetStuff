@@ -1,0 +1,209 @@
+
+wpthlp_dp1=np.mean(np.array(zm.variables['wpthlp_dp1']),(2,3))
+wpthlp_mfl=np.mean(np.array(zm.variables['wpthlp_mfl']),(2,3))
+wpthlp_cl=np.mean(np.array(zm.variables['wpthlp_cl']),(2,3))
+wpthlp_sicl=np.mean(np.array(zm.variables['wpthlp_sicl']),(2,3))
+wpthlp_forcing=np.mean(np.array(zm.variables['wpthlp_forcing']),(2,3))
+wpthlp_mc=np.me
+
+
+
+wpthlp_ta=np.mean(np.array(fzt.variables['wpthlp_ta']),(2,3))
+wpthlp_tp=np.mean(np.array(fzt.variables['wpthlp_tp']),(2,3))
+wpthlp_bp1=np.mean(np.array(fzt.variables['wpthlp_bp1']),(2,3))
+wpthlp_bp2=np.mean(np.array(fzt.variables['wpthlp_bp2']),(2,3))
+wpthlp_pr1=np.mean(np.array(fzt.variables['wpthlp_pr1']),(2,3))
+wpthlp_pr2=np.mean(np.array(fzt.variables['wpthlp_pr2']),(2,3))
+wpthlp_pr3=np.mean(np.array(fzt.variables['wpthlp_pr3']),(2,3))
+wpthlp_dp1=np.mean(np.array(fzt.variables['wpthlp_dp1']),(2,3))
+wpthlp_splat=np.mean(np.array(fzt.variables['wpthlp_splat']),(2,3))
+#wpthlp_ma=np.mean(np.array(fzt.variables['wpthlp_ma']),(2,3))
+#wpthlp_cl=np.mean(np.array(fzt.variables['wpthlp_cl']),(2,3))
+#wpthlp_sdmp=np.mean(np.array(fzt.variables['wpthlp_sdmp']),(2,3))
+#wpthlp_ac=np.mean(np.array(fzt.variables['wpthlp_ac']),(2,3))
+
+wp2_ta=np.mean(np.array(zm.variables['wp2_ta']),(2,3))
+wp2_bp=np.mean(np.array(zm.variables['wp2_bp']),(2,3))
+wp2_dp1=np.mean(np.array(zm.variables['wp2_dp1']),(2,3))
+wp2_dp2=np.mean(np.array(zm.variables['wp2_dp2']),(2,3))
+wp2_pr1=np.mean(np.array(zm.variables['wp2_pr1']),(2,3))
+wp2_pr2=np.mean(np.array(zm.variables['wp2_pr2']),(2,3))
+wp2_pr3=np.mean(np.array(zm.variables['wp2_pr3']),(2,3))
+wp2_splat=np.mean(np.array(zm.variables['wp2_splat']),(2,3))
+
+wpthlp_tp=np.mean(np.array(zm.variables['wpthlp_ta']),(2,3))
+wpthlp_bp=np.mean(np.array(zm.variables['wpthlp_bp']),(2,3))
+wpthlp_pr3=np.mean(np.array(zm.variables['wpthlp_pr3']),(2,3))
+wpthlp_pr1=np.mean(np.array(zm.variables['wpthlp_pr1']),(2,3))
+
+    ax1.plot(wpthlp_ta[t,:],alt,label='wpthlp_ta')
+    ax1.plot(wpthlp_bp[t,:],alt,label='wpthlp_bp')
+    ax1.plot(wpthlp_pr1[t,:],alt,label='wpthlp_pr1')
+    ax1.plot(wpthlp_pr3[t,:],alt,label='wpthlp_pr3')
+
+
+
+
+import numpy as np
+import matplotlib.pyplot as plt
+from netCDF4 import Dataset
+
+zm=Dataset('dycoms2_rf01_zm.nc')
+
+thlp2=np.mean(np.array(zm.variables['thlp2']),(2,3))
+alt=np.array(zm.variables['altitude'])
+
+fig, ax = plt.subplots()
+
+for t in range(0,360):
+    ax.cla()
+#    ax.plot(thlm[t,0:100],alt[0:100],label='thlm')
+#    ax.plot(thvm[t,0:100],alt[0:100],label='thvm')
+#    ax.plot(thlprtp[t,0:100],alt[0:100],label='thlprtp')
+#    ax.plot(thlprcp[t,0:100],alt[0:100],label='thlprcp')
+    ax.plot(wp2bp[t,0:100],alt[0:100],label='wp2_bp')
+    ax.plot(thlp2[t,0:100],alt[0:100],label='thlp2')
+    ax.set_xlabel('[K]')
+    ax.set_ylabel('height [m]')
+    ax.set_xlim(-0.0025,0.01)
+    ax.legend()
+    ax.set_title("t = {}".format(t))
+    plt.pause(0.05)
+
+plt.close()
+
+
+
+import numpy as np
+import matplotlib.pyplot as plt
+from netCDF4 import Dataset
+
+zm=Dataset('dycoms2_rf01_zm.nc')
+
+wpthlp=np.mean(np.array(zm.variables['wpthlp']),(2,3))
+alt=np.array(zm.variables['altitude'])
+
+wpthlp_bt=np.mean(np.array(zm.variables['wpthlp_bt']),(2,3))
+wpthlp_ma=np.mean(np.array(zm.variables['wpthlp_ma']),(2,3))
+wpthlp_ta=np.mean(np.array(zm.variables['wpthlp_ta']),(2,3))
+wpthlp_tp=np.mean(np.array(zm.variables['wpthlp_tp']),(2,3))
+wpthlp_ac=np.mean(np.array(zm.variables['wpthlp_ac']),(2,3))
+wpthlp_bp=np.mean(np.array(zm.variables['wpthlp_bp']),(2,3))
+wpthlp_pr3=np.mean(np.array(zm.variables['wpthlp_pr3']),(2,3))
+wpthlp_pr1=np.mean(np.array(zm.variables['wpthlp_pr1']),(2,3))
+wpthlp_pr2=np.mean(np.array(zm.variables['wpthlp_pr2']),(2,3))
+wpthlp_dp1=np.mean(np.array(zm.variables['wpthlp_dp1']),(2,3))
+wpthlp_mfl=np.mean(np.array(zm.variables['wpthlp_mfl']),(2,3))
+wpthlp_cl=np.mean(np.array(zm.variables['wpthlp_cl']),(2,3))
+wpthlp_sicl=np.mean(np.array(zm.variables['wpthlp_sicl']),(2,3))
+wpthlp_forcing=np.mean(np.array(zm.variables['wpthlp_forcing']),(2,3))
+wpthlp_mc=np.mean(np.array(zm.variables['wpthlp_mc']),(2,3))
+
+fig,ax3=plt.subplots()
+
+for t in range(0,360):
+    ax3.cla()
+    ax3.plot(wpthlp[t,0:100]*0.1,alt[0:100],'--',label='wpthlp_bt')
+    ax3.plot(wpthlp_bt[t,0:100],alt[0:100],label='wpthlp_bt')
+    ax3.plot(wpthlp_tp[t,0:100],alt[0:100],label='wpthlp_tp')
+    ax3.plot(wpthlp_bp[t,0:100],alt[0:100],label='wpthlp_bp')
+    ax3.plot(wpthlp_pr1[t,0:100],alt[0:100],label='wpthlp_pr1')
+    ax3.plot(wpthlp_pr3[t,0:100],alt[0:100],label='wpthlp_pr3')
+    ax3.plot(wpthlp_ma[t,0:100],alt[0:100],label='wpthlp_ma')
+    ax3.plot(wpthlp_ta[t,0:100],alt[0:100],label='wpthlp_ta')
+    ax3.plot(wpthlp_pr2[t,0:100],alt[0:100],label='wpthlp_pr2')
+    ax3.plot(wpthlp_dp1[t,0:100],alt[0:100],label='wpthlp_dp1')
+    ax3.plot(wpthlp_mfl[t,0:100],alt[0:100],label='wpthlp_mfl')
+    ax3.plot(wpthlp_cl[t,0:100],alt[0:100],label='wpthlp_cl')
+    ax3.plot(wpthlp_sicl[t,0:100],alt[0:100],label='wpthlp_sicl')
+    ax3.plot(wpthlp_forcing[t,0:100],alt[0:100],label='wpthlp_forcing')
+    ax3.plot(wpthlp_mc[t,0:100],alt[0:100],label='wpthlp_mc')
+    ax3.set_xlabel('wpthlp [m K/s2]')
+    ax3.set_ylabel('height [m]')
+    ax3.set_xlim(-0.01,0.016)
+    ax3.legend(loc='right')
+    ax3.set_title('wpthlp')
+    plt.pause(0.05)
+
+
+
+
+
+
+
+import numpy as np
+import matplotlib.pyplot as plt
+from netCDF4 import Dataset
+
+fzt=Dataset('dycoms2_rf01_zt.nc')
+
+#wpthlp=np.mean(np.array(zm.variables['wpthlp']),(2,3))
+alt=np.array(fzt.variables['lev'])
+
+wp3_ta=np.mean(np.array(fzt.variables['wp3_ta']),(2,3))
+wp3_tp=np.mean(np.array(fzt.variables['wp3_tp']),(2,3))
+wp3_bp1=np.mean(np.array(fzt.variables['wp3_bp']),(2,3))
+wp3_pr1=np.mean(np.array(fzt.variables['wp3_pr1']),(2,3))
+wp3_pr2=np.mean(np.array(fzt.variables['wp3_pr2']),(2,3))
+wp3_dp1=np.mean(np.array(fzt.variables['wp3_dp1']),(2,3))
+
+
+
+fig,ax3=plt.subplots()
+
+for t in range(0,360):
+    ax3.cla()
+    ax3.plot(wp3_ta[t,0:100],alt[0:100],label='wp3_ta')
+    ax3.plot(wp3_tp[t,0:100],alt[0:100],label='wp3_tp')
+    ax3.plot(wp3_bp1[t,0:100],alt[0:100],label='wp3_bp1')
+#    ax3.plot(wp3_bp2[t,0:100],alt[0:100],label='wp3_bp2')
+    ax3.plot(wp3_dp1[t,0:100],alt[0:100],label='wp3_dp1')
+    ax3.plot(wp3_pr1[t,0:100],alt[0:100],label='wp3_pr1')
+    ax3.plot(wp3_pr2[t,0:100],alt[0:100],label='wp3_pr2')
+#    ax3.plot(wp3_pr3[t,0:100],alt[0:100],label='wp3_pr3')
+    ax3.set_xlabel('wpthlp [m K/s2]')
+    ax3.set_ylabel('height [m]')
+    ax3.set_xlim(-0.01,0.016)
+    ax3.legend(loc='right')
+    ax3.set_title('wpthlp')
+    plt.pause(0.05)
+
+
+
+
+'thlp2_bt', 'thlp2_ma', 'thlp2_ta', 'thlp2_tp', 'thlp2_dp1', 'thlp2_dp2', 'thlp2_cl', 'thlp2_pd', 'thlp2_sf', 'thlp2_forcing', 'thlp2_mc'
+
+thlp2_bt=np.mean(np.array(zm.variables['thlp2_bt']),(2,3))
+thlp2_ma=np.mean(np.array(zm.variables['thlp2_ma']),(2,3))
+thlp2_ta=np.mean(np.array(zm.variables['thlp2_ta']),(2,3))
+thlp2_tp=np.mean(np.array(zm.variables['thlp2_tp']),(2,3))
+thlp2_dp1=np.mean(np.array(zm.variables['thlp2_dp1']),(2,3))
+thlp2_dp2=np.mean(np.array(zm.variables['thlp2_dp2']),(2,3))
+thlp2_cl=np.mean(np.array(zm.variables['thlp2_cl']),(2,3))
+thlp2_pd=np.mean(np.array(zm.variables['thlp2_pd']),(2,3))
+thlp2_forcing=np.mean(np.array(zm.variables['thlp2_forcing']),(2,3))
+thlp2_mc=np.mean(np.array(zm.variables['thlp2_mc']),(2,3))
+thlp2_sf=np.mean(np.array(zm.variables['thlp2_sf']),(2,3))
+
+
+fig,ax3=plt.subplots()
+
+for t in range(0,360):
+    ax3.cla()
+    ax3.plot(thlp2[t,0:100]*0.01,alt[0:100],label='thlp2')
+    ax3.plot(thlp2_ma[t,0:100],alt[0:100],label='thlp2_ma')
+    ax3.plot(thlp2_ta[t,0:100],alt[0:100],label='thlp2_ta')
+    ax3.plot(thlp2_tp[t,0:100],alt[0:100],label='thlp2_tp')
+    ax3.plot(thlp2_dp1[t,0:100],alt[0:100],label='thlp2_dp1')
+    ax3.plot(thlp2_dp2[t,0:100],alt[0:100],label='thlp2_dp2')
+    ax3.plot(thlp2_cl[t,0:100],alt[0:100],label='thlp2_cl')
+    ax3.plot(thlp2_pd[t,0:100],alt[0:100],label='thlp2_pd')
+    ax3.plot(thlp2_sf[t,0:100],alt[0:100],label='thlp2_sf')
+    ax3.plot(thlp2_forcing[t,0:100],alt[0:100],label='thlp2_forcing')
+    ax3.plot(thlp2_mc[t,0:100],alt[0:100],label='thlp2_mc')
+    ax3.set_xlabel('thlp2 [m K/s2]')
+    ax3.set_ylabel('height [m]')
+    ax3.set_xlim(-0.01,0.016)
+    ax3.legend(loc='right')
+    ax3.set_title('thlp2')
+    plt.pause(0.05)
