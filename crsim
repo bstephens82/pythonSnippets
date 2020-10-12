@@ -1,0 +1,12 @@
+
+
+st=Dataset('silhstest.nc')
+
+rng=st.variables['range']
+Z=np.array(st.variables['Zhh'])
+
+
+for i in range(0,len(Z)):
+    for j in range(0,16):
+        if Z[i,0,j]==-999:
+            Z[i,0,j]=0
