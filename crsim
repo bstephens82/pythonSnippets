@@ -10,3 +10,16 @@ for i in range(0,len(Z)):
     for j in range(0,16):
         if Z[i,0,j]==-999:
             Z[i,0,j]=0
+
+
+
+
+#extract nc and rc from SILHS data
+nc=np.zeros((360,114,1,1,16))
+for i in range(0,360):
+    for j in range(0,114):
+        for k in range(0,16):
+            if chi[i,j,0,0,k]<0:
+                chi[i,j,0,0,k]=0
+                Ncn[i,j,0,0,k]=0
+
