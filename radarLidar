@@ -396,3 +396,66 @@ plt.xlabel('Time (sec. since midnight UTC)')
 plt.ylabel('Height [m]')
 plt.legend()
 plt.show()
+
+
+
+### Lidar movie
+
+from result_fnx import filter_missing
+from netCDF4 import Dataset
+import numpy as np
+import matplotlib.pyplot as plt
+
+dl=Dataset('/home/stepheba/data/ARM/DL/2016-08-30/dl_stats.nc')
+lassostat=Dataset('/home/stepheba/data/LASSO/alpha2/2016-08-30/sim001/raw_model/wrfstat.nc')
+
+
+start=73 #0  
+end=163 #432 
+dlh=np.array(dl.variables['height'])
+wvar=np.array(dl.variables['w_variance'][start:end,:])
+wskew=np.array(dl.variables['w_skewness'][start:end,:])
+
+snr=np.array(dl.variables['snr'][start:end,:])
+noise=np.array(dl.variables['noise'][start:end,:])
+
+#filtering missing values
+wvar_nan=filter_missing(wvar)
+wskew_nan=filter_missing(wskew)
+
+for t in range(0,90):
+    for z in range(0,133):
+        if snr[t,z]<0.008 or noise[t,z]>1.00:
+            wvar_nan[t,z]=np.nan
+            wskew_nan[t,z]=np.nan
+
+csp_w2=np.array(lassostat.variables['CSP_W2'])
+csp_skew=np.array(lassostat.variables['CSP_WSKEW'])
+csp_z=np.array(lassostat.variables['CSP_Z8W'])
+
+fig, ax = plt.subplots()
+for t in range(0,90):
+     ax.cla()
+     ax.plot(wskew_nan[t,:],dlh,label='lidar')
+     ax.plot(csp_skew[t+1,:],csp_z[t+1,:],label='lasso')
+     ax.set_xlabel('w skew')
+     ax.set_ylabel('height [m]')
+     ax.set_xlim(-3,3)
+     ax.set_ylim(0,1500)
+     ax.legend()
+     plt.pause(0.1)
+
+
+fig, ax = plt.subplots()
+for t in range(0,90):
+     ax.cla()
+     ax.plot(wvar_nan[t,:],dlh,label='lidar')
+     ax.plot(csp_w2[t+1,:],csp_z[t+1,:],label='lasso')
+     ax.set_xlabel('w var')
+     ax.set_ylabel('height [m]')
+     ax.set_xlim(-20,20)
+     ax.set_ylim(0,4000)
+     ax.legend()
+     plt.pause(0.1)
+
+
