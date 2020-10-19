@@ -3,14 +3,15 @@
 
 fig=plt.figure()
 ax=fig.add_subplot(2,1,1)
-im=ax.imshow(thlprcpw.T,origin='lower')
+im=ax.imshow(zhh[:,:,15].T,origin='lower')
 fig.colorbar(im,ax=ax)
-ax.set_title('clubb radht')
+ax.set_title('cr-sim Zhh [dB]')
 ax=fig.add_subplot(2,1,2)
-im=ax.imshow(thlprcps0.T,origin='lower')
+im=ax.imshow(ref[0:350,:,1,1].T,origin='lower')
 fig.colorbar(im,ax=ax)
-ax.set_title('wrf th_rad_CLUBB')
+ax.set_title('wrf refl_10cm [dB]')
 plt.show()
+
 
 #4x1
 
