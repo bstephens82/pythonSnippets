@@ -4,7 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from netCDF4 import Dataset
 
-def calculate_variance_epsilon(z,w):
+def calculate_variance_epsilon_bu(z,w):
 
     base_level=3
     num_points=30
@@ -12,15 +12,43 @@ def calculate_variance_epsilon(z,w):
     deltaz_variance=np.zeros((num_points))
     epsilon=np.zeros((num_points))
     spacer=1
-    for k in range(0,num_points):
+    for k in range(1,num_points):
         deltaz[k]=z[base_level+spacer*k]-z[base_level]
         deltaz_variance[k]=np.var(w[:,base_level+spacer*k]-w[:,base_level],0,ddof=1)
-        if k==0:
-            epsilon[k]=np.nan
-        if k>0:
-            epsilon[k]=deltaz_variance[k]**(3/2)/(2.**(3/2))/deltaz[k]
+        epsilon[k]=deltaz_variance[k]**(3/2)/(2.**(3/2))/deltaz[k]
+
+    epsilon[0]=np.nan
 
     return deltaz, deltaz_variance, epsilon
+
+def calculate_variance_epsilon_ud(z,w):
+
+    height_min=200
+    height_max=900
+    height_init=550
+
+    z_min_array=height_min*np.ones((len(z)))
+    z_max_array=height_max*np.ones(len(z))
+    z_init_array=height_init*np.ones(len(z))
+    zmni=np.argmin((z_min_array-z)**2)
+    zmxi=np.argmin((z_max_array-z)**2)
+    zini=np.argmin((z_init_array-z)**2)
+
+    deltaz=np.zeros((zmxi-zini+1))
+    deltaz_variance=np.zeros((zmxi-zini+1))
+    deltaz_varsum=np.zeros((zmxi-zini+1))
+    epsilon=np.zeros((zmxi-zini+1))
+
+    for k in range(1,max(zini-zmni+1,zmxi-zini+1)):
+        if zini+k<=zmxi and zini-k>=zmni:
+            deltaz[k]=z[zini+k]-z[zini-k]
+            deltaz_variance[k]=np.var(w[:,zini+k]-w[:,zini-k],0,ddof=1)
+            deltaz_varsum[k]=np.var(w[:,zini+k],0,ddof=1)+np.var(w[:,zini-k],0,ddof=1)
+            epsilon[k]=deltaz_variance[k]**(3/2)/(2.**(3/2))/deltaz[k]
+
+    epsilon[0]=np.nan
+
+    return deltaz, deltaz_variance, deltaz_varsum, epsilon
 
 #where all the data is located
 dl_folder='/glade/work/stepheba/lidar/'
@@ -232,7 +260,7 @@ for case in range(0,8):
 
 
     #for raw doppler lidar, no need to deal with horizontal or other dimensions
-    deltaz_dlraw, deltaz_variance_dlraw, epsilon_dlraw = calculate_variance_epsilon(z=dl_raw_z,w=dl_raw_w[dl_raw_tsi:dl_raw_tei,:])
+    deltaz_dlraw, deltaz_variance_dlraw, deltaz_varsum_dlraw, epsilon_dlraw = calculate_variance_epsilon_ud(z=dl_raw_z,w=dl_raw_w[dl_raw_tsi:dl_raw_tei,:])
 
     #for lasso 1-minute output, need to choose columns within the grid
 #    deltaz_lasso, deltaz_variance_lasso, epsilon_lasso = calculate_variance_epsilon(z=lasso_1m_z,w=lasso_1m_w[lasso_1m_tsi:lasso_1m_tei,:,:,:])
@@ -323,6 +351,7 @@ for case in range(0,8):
     if case==0 or case==4:
         ax_eps.set_ylabel(r'$D_{11}$ [m2/s2]', color=color)
     ax_eps.plot(deltaz_dlraw,deltaz_variance_dlraw,color=color)
+    ax_eps.plot(deltaz_dlraw,deltaz_varsum_dlraw,color=color,linestyle='dashed')
     ax_eps.tick_params(axis='y', labelcolor=color)
 
     ax_eps2 = ax_eps.twinx()  # create a second axis that shares the same x-axis    
