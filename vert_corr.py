@@ -4,6 +4,24 @@ import numpy as np
 import matplotlib.pyplot as plt
 from netCDF4 import Dataset
 
+def calculate_variance_epsilon(z,w):
+
+    base_level=3
+    num_points=30
+    deltaz=np.zeros((num_points))
+    deltaz_variance=np.zeros((num_points))
+    epsilon=np.zeros((num_points))
+    spacer=1
+    for k in range(0,num_points):
+        deltaz[k]=z[base_level+spacer*k]-z[base_level]
+        deltaz_variance[k]=np.var(w[:,base_level+spacer*k]-w[:,base_level],0,ddof=1)
+        if k==0:
+            epsilon[k]=np.nan
+        if k>0:
+            epsilon[k]=deltaz_variance[k]**(3/2)/(2.**(3/2))/deltaz[k]
+
+    return deltaz, deltaz_variance, epsilon
+
 #where all the data is located
 dl_folder='/glade/work/stepheba/lidar/'
 dl_stats=['dl20170627.nc','dl20170717.nc','dl20170728.nc','dl20170923.nc','dl20180911.nc','dl20180917.nc','dl20180918.nc','dl20181002.nc']
@@ -197,18 +215,6 @@ for case in range(0,8):
     lasso_1m_cf=np.mean(np.array(lasso_1m_dflt_data.variables['CLDFRA'][lasso_1m_tsi:lasso_1m_tei,lasso_1m_zsi:lasso_1m_zei,:,:]),(2,3)) 
 
     #process lidar stats variables
-#    dl_shape=dl_w.shape
-#    for t in range(0,dl_shape[0]):
-#        for z in range(0,dl_shape[1]):
-#            if dl_noise[t,z]>1.0 or dl_snr[t,z]<0.008:
-#                dl_w[t,z]=np.nan
-#                dl_w2[t,z]=np.nan
-#                dl_wskew[t,z]=np.nan
-#            if abs(dl_w2[t,z])>100:
-#                dl_w2[t,z]=np.nan
-#            if abs(dl_wskew[t,z])>100:
-#                dl_wskew=np.nan
-
     dl_w2[abs(dl_w2)>100]=np.nan
     dl_wskew[abs(dl_wskew)>100]=np.nan
     dl_w[dl_noise>1.0]=np.nan
@@ -222,27 +228,17 @@ for case in range(0,8):
     dl_w3=dl_wskew*dl_w2**(3/2)
 
     #process lidar raw variables
-#    dl_raw_shape=dl_raw_w.shape
-#    for t in range(0,dl_raw_shape[0]):
-#        for z in range(0,dl_raw_shape[1]):
-#            if dl_raw_snr[t,z]<0.008:
-#                dl_raw_w[t,z]=np.nan
     dl_raw_w[dl_raw_snr<0.008]=np.nan
 
-    base_level=3
-    num_points=30
-    deltaz=np.zeros((num_points))
-    deltaz_variance=np.zeros((num_points))
-    epsilon=np.zeros((num_points))
-    spacer=1
-    for k in range(0,num_points):
-        deltaz[k]=dl_raw_z[base_level+spacer*k]-dl_raw_z[base_level]
-        deltaz_variance[k]=np.cov(dl_raw_w[dl_raw_tsi:dl_raw_tei,base_level+spacer*k]-dl_raw_w[dl_raw_tsi:dl_raw_tei,base_level],dl_raw_w[dl_raw_tsi:dl_raw_tei,base_level+spacer*k]-dl_raw_w[dl_raw_tsi:dl_raw_tei,base_level])[0,1]
-        #deltaz_variance[k]=np.var(dl_raw_w[dl_raw_tsi:dl_raw_tei,base_level+spacer*k]-dl_raw_w[dl_raw_tsi:dl_raw_tei,base_level],0,ddof=1)
-        if k==0:
-            epsilon[k]=np.nan
-        if k>0:
-            epsilon[k]=deltaz_variance[k]**(3/2)/(2.**(3/2))/deltaz[k]
+
+    #for raw doppler lidar, no need to deal with horizontal or other dimensions
+    deltaz_dlraw, deltaz_variance_dlraw, epsilon_dlraw = calculate_variance_epsilon(z=dl_raw_z,w=dl_raw_w[dl_raw_tsi:dl_raw_tei,:])
+
+    #for lasso 1-minute output, need to choose columns within the grid
+#    deltaz_lasso, deltaz_variance_lasso, epsilon_lasso = calculate_variance_epsilon(z=lasso_1m_z,w=lasso_1m_w[lasso_1m_tsi:lasso_1m_tei,:,:,:])
+
+    #for silhs output, need to select subcolumns
+#    deltaz_silhs, deltaz_variance_silhs, epsilon_silhs = calculate_variance_epsilon(z=silhs_z,w=silhs_w[silhs_tsi:silhs_tei,:])
 
 
     #figure with up2 vp2 wp2 and cloud frac
@@ -319,26 +315,28 @@ for case in range(0,8):
     ax2.legend()
     #plt.subplots_adjust(bottom=0.2)
 
-    #figure showing D_11 and epsilon 
+    #figure showing D_11 and epsilon DL raw
     ax_eps=fig_eps.add_subplot(2,4,case+1)
     color = 'tab:red'
     if case>3:
         ax_eps.set_xlabel(r'$\Delta z$ [m]')
     if case==0 or case==4:
         ax_eps.set_ylabel(r'$D_{11}$ [m2/s2]', color=color)
-    ax_eps.plot(deltaz,deltaz_variance,color=color)
+    ax_eps.plot(deltaz_dlraw,deltaz_variance_dlraw,color=color)
     ax_eps.tick_params(axis='y', labelcolor=color)
 
     ax_eps2 = ax_eps.twinx()  # create a second axis that shares the same x-axis    
     color = 'tab:blue'
     if case==3 or case==7:
         ax_eps2.set_ylabel(r'$\epsilon$ [m2/s3]', color=color)  # we already handled the x-label with ax1
-    ax_eps2.plot(deltaz,epsilon,color=color)
+    ax_eps2.plot(deltaz_dlraw,epsilon_dlraw,color=color)
     ax_eps2.tick_params(axis='y', labelcolor=color)
     ax_eps2.ticklabel_format(scilimits=[-3,3])
     ax_eps.set_title(silhs_files[case])
 
 
+
+# output the figures
 fig_dl_raw_w.savefig('figs/dl_raw_w.png',dpi=300,bbox_inches="tight")
 fig_iso.savefig('figs/iso.png',dpi=300,bbox_inches="tight")
 fig_wp2.savefig('figs/wp2.png',dpi=300,bbox_inches="tight")
@@ -349,5 +347,44 @@ fig_eps.subplots_adjust(hspace=0.325)
 fig_eps.subplots_adjust(wspace=0.5)
 fig_eps.savefig('figs/eps.png',dpi=300,bbox_inches='tight')
 
+
+
+
+
+
+#    dl_shape=dl_w.shape
+#    for t in range(0,dl_shape[0]):
+#        for z in range(0,dl_shape[1]):
+#            if dl_noise[t,z]>1.0 or dl_snr[t,z]<0.008:
+#                dl_w[t,z]=np.nan
+#                dl_w2[t,z]=np.nan
+#                dl_wskew[t,z]=np.nan
+#            if abs(dl_w2[t,z])>100:
+#                dl_w2[t,z]=np.nan
+#            if abs(dl_wskew[t,z])>100:
+#                dl_wskew=np.nan
+
+
+#    dl_raw_shape=dl_raw_w.shape
+#    for t in range(0,dl_raw_shape[0]):
+#        for z in range(0,dl_raw_shape[1]):
+#            if dl_raw_snr[t,z]<0.008:
+#                dl_raw_w[t,z]=np.nan
+
+
+#    base_level=3
+#    num_points=30
+#    deltaz=np.zeros((num_points))
+#    deltaz_variance=np.zeros((num_points))
+#    epsilon=np.zeros((num_points))
+#    spacer=1
+#    for k in range(0,num_points):
+#        deltaz[k]=dl_raw_z[base_level+spacer*k]-dl_raw_z[base_level]
+#        deltaz_variance[k]=np.cov(dl_raw_w[dl_raw_tsi:dl_raw_tei,base_level+spacer*k]-dl_raw_w[dl_raw_tsi:dl_raw_tei,base_level],dl_raw_w[dl_raw_tsi:dl_raw_tei,base_level+spacer*k]-dl_raw_w[dl_raw_tsi:dl_raw_tei,base_level])[0,1]
+#        #deltaz_variance[k]=np.var(dl_raw_w[dl_raw_tsi:dl_raw_tei,base_level+spacer*k]-dl_raw_w[dl_raw_tsi:dl_raw_tei,base_level],0,ddof=1)
+#        if k==0:
+#            epsilon[k]=np.nan
+#        if k>0:
+#            epsilon[k]=deltaz_variance[k]**(3/2)/(2.**(3/2))/deltaz[k]
 
 
